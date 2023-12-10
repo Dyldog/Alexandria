@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "armstrong",
+      "kind" : "localSourceControl",
+      "location" : "/Users/dylan/Code/My Apps/Armstrong",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ca7345b4a031ca1b44132d1d85a0266ddb4e2219"
+      }
+    },
+    {
+      "identity" : "dylkit",
+      "kind" : "localSourceControl",
+      "location" : "/Users/dylan/Code/My Apps/DylKit",
+      "state" : {
+        "branch" : "master",
+        "revision" : "c7ce556e9217412a7439d440592787529d7141f0"
+      }
+    }
+  ],
+  "version" : 2
+}

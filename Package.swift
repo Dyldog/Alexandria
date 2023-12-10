@@ -5,17 +5,27 @@ import PackageDescription
 
 let package = Package(
     name: "Alexandria",
+    platforms: [
+        .iOS(.v15),
+        .macOS(.v13)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Alexandria",
             targets: ["Alexandria"]),
     ],
+    dependencies: [
+        .package(url: "../DylKit", branch: "master"),
+        .package(url: "../Armstrong", branch: "main")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Alexandria"),
+            name: "Alexandria",
+            dependencies: ["DylKit", "Armstrong"]
+        ),
         .testTarget(
             name: "AlexandriaTests",
             dependencies: ["Alexandria"]),
