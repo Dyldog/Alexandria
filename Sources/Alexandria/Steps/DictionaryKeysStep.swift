@@ -10,6 +10,7 @@ import Armstrong
 
 public final class  DictionaryKeysStep: ValueStep {
     
+    public static var type: VariableType { .dictionaryKeysStep }
     public static var title: String { "Get all keys from a dictionary" }
     public var dictionary: TypedValue<DictionaryValue>
     

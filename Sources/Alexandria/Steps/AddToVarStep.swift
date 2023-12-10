@@ -10,6 +10,7 @@ import Armstrong
 
 public final class AddToVarStep: Step, ObservableObject {
     
+    public static var type: VariableType { .addToVarStep }
     public static var title: String { "Add to variable" }
     public var varName: AnyValue
     public var value: AnyValue

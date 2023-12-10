@@ -9,6 +9,8 @@ import SwiftUI
 import Armstrong
 
 public final class VariableStep: ValueStep {
+    
+    public static var type: VariableType { .variableStep }
     public static var title: String { "Get variable" }
     public var varName: AnyValue
     public var type: VariableTypeValue

@@ -54,8 +54,8 @@ extension VariableType {
         }, set: { new in
             onUpdate(new)
         })) {
-            ForEach(VariableType.allCases) {
-                Text($0.protoString).tag($0)
+            ForEach(AALibrary.shared.values) {
+                Text($0.type.title).tag($0.type)
             }
         }.pickerStyle(.menu).any
     }

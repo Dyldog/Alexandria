@@ -9,8 +9,9 @@ import SwiftUI
 import Armstrong
 
 public final class ForEachStep: Step {
-    public static var title: String { "Loop over an array of values" }
     
+    public static var type: VariableType { .forEachStep }
+    public static var title: String { "Loop over an array of values" }
     public var values: TypedValue<ArrayValue>
     public var loop: StepArray
     

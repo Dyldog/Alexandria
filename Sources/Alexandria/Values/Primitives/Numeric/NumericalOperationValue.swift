@@ -43,9 +43,6 @@ public final class NumericalOperationValue: CompositeEditableVariableValue {
             let rhs = try await rhs.value(with: variables.copy()) as? any NumericValue
         else { throw VariableValueError.wrongTypeForOperation }
         
-        let lhsValue = lhs.value
-        let rhsValue = rhs.value
-        
         return try lhs.perform(operation: operation.value, with: rhs)
     }
 }

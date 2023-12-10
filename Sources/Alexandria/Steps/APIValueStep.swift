@@ -9,6 +9,8 @@ import SwiftUI
 import Armstrong
 
 public final class APIValueStep: ValueStep {
+    
+    public static var type: VariableType { .aPIStep }
     public static var title: String { "Get value from API" }
     public var url: AnyValue
     

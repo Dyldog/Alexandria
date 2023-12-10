@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Armstrong
+import DylKit
 
 // sourcery: variableTypeName = "view"
 public final class AnyMakeableView: EditableVariableValue {
@@ -39,9 +40,9 @@ public final class AnyMakeableView: EditableVariableValue {
                 Text("type")
                 Spacer()
                 Picker("", selection: .init(get: {
-                    Swift.type(of: self.value).type
+                    HashableBox(Swift.type(of: self.value), hash: { $0.type })
                 }, set: { new in
-                    self.value = new.defaultView as! any MakeableView
+                    self.value = new.value.makeDefault()
                     onUpdate(self)
                 })) {
                     ForEach(AALibrary.shared.views.map { $0.type }) {

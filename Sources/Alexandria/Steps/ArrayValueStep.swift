@@ -9,6 +9,8 @@ import SwiftUI
 import Armstrong
 
 public final class ArrayValueStep: ValueStep {
+    
+    public static var type: VariableType { .arrayStep }
     public static var title: String { "Get value from array" }
     
     public var protoString: String { "\(array.protoString)[\(index.protoString)]"}

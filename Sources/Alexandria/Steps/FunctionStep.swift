@@ -9,6 +9,8 @@ import SwiftUI
 import Armstrong
 
 public final class FunctionStep: Step {
+    
+    public static var type: VariableType { .functionStep }
     public static var title: String { "Run function" }
     public var functionName: AnyValue
     

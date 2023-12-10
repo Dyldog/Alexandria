@@ -9,7 +9,7 @@ import SwiftUI
 import Armstrong
 
 public final class PrintVarStep: Step, Codable {
-    public static var type: VariableType { fatalError() }
+    public static var type: VariableType { .printVarStep }
 
     public static var title: String { "Print variable" }
     public var varName: AnyValue

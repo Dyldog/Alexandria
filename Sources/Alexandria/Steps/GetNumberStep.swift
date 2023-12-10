@@ -9,6 +9,8 @@ import Foundation
 import Armstrong
 
 public final class GetNumberStep: ValueStep {
+    
+    public static var type: VariableType { .getNumberStep }
     public static var title: String { "Get number from value" }
     public var value: AnyValue
     public var numberType: NumericTypeValue

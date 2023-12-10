@@ -9,6 +9,8 @@ import Foundation
 import Armstrong
 
 public final class URLEncodeStep: ValueStep {
+    
+    public static var type: VariableType { .uRLEncodeStep }
     public static var title: String { "URL encode a string" }
     
     public var value: AnyValue

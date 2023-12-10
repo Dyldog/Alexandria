@@ -11,7 +11,7 @@ import Armstrong
 public final class IfStep: Step {
     
     public static var title: String { "If condition" }
-    public static var type: VariableType { fatalError() }
+    public static var type: VariableType { .ifStep }
     
     public var ifAction: ConditionalActionValue
     public var elseAction: StepArray

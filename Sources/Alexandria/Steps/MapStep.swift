@@ -9,6 +9,8 @@ import SwiftUI
 import Armstrong
 
 public final class MapStep: ValueStep {
+    
+    public static var type: VariableType { .mapStep }
     public static var title: String { "Map values" }
     
     public var value: TypedValue<ArrayValue>

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DylKit
+import Armstrong
 
 struct ListEditView: View {
     let title: String
@@ -32,10 +33,16 @@ struct ListEditView: View {
                 addButton(index: 0)
                 
                 ForEach(enumerated: value.elements) { (index, element) in
-                    VStack {
-                        element.editView(title: "\(title)[\(index)]") { editedElement in
-                            value.elements[index] = editedElement
-                            onUpdate(value)
+                    HStack {
+                        VStack {
+                            element.editView(title: "\(title)[\(index)]") { editedElement in
+                                value.elements[index] = editedElement
+                                onUpdate(value)
+                            }
+                        }
+                        
+                        ElementDeleteButton {
+                            remove(at: index)
                         }
                     }
                     .padding()
@@ -53,7 +60,8 @@ struct ListEditView: View {
     
     func addButton(index: Int) -> some View {
         SwiftUI.Button {
-            let view = value.type.defaultView
+            guard let type = value.type.editableType else { return }
+            let view = type.makeDefault()
             if index <= value.elements.count {
                 value.elements.append(view)
             } else {
@@ -64,5 +72,10 @@ struct ListEditView: View {
         } label: {
             Image(systemName: "plus.app.fill").foregroundStyle(.blue)
         }
+    }
+    
+    func remove(at index: Int) {
+        value.elements.remove(at: index)
+        onUpdate(value)
     }
 }

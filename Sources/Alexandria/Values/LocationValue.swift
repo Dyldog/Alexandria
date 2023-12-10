@@ -16,8 +16,8 @@ public final class LocationValue: CompositeEditableVariableValue {
     public var latitude: TypedValue<FloatValue>
     public var longitude: TypedValue<FloatValue>
     
-    public var protoString: String { "\(latitude.value), \(longitude.value)" }
-    public var valueString: String { protoString }
+    public var protoString: String { "\(latitude.protoString), \(longitude.protoString)" }
+    public var valueString: String { "\(latitude.valueString), \(longitude.valueString)" }
     
     public init(name: TypedValue<StringValue>, latitude: TypedValue<FloatValue>, longitude: TypedValue<FloatValue>) {
         self.name = name

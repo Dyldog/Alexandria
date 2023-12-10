@@ -50,7 +50,7 @@ struct DictionaryEditView: View {
     
     func addButton() -> some View {
         SwiftUI.Button("+") {
-            value.elements[StringValue(value: "_NEW_")] = value.type.value.defaultView
+            value.elements[StringValue(value: "_NEW_")] = type(of: value).makeDefault()
             onUpdate(value)
         }
     }

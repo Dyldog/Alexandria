@@ -122,42 +122,6 @@ extension NumericType: CodeRepresentable {
 
 
 
-extension AddViewViewModel {
-    convenience init(onSelect: @escaping (any MakeableView) -> Void) {
-        self.init(rows: [
-
-            .init(title: "Base", onTap: {
-                onSelect(MakeableBase.makeDefault())
-            }),
-
-            .init(title: "Button", onTap: {
-                onSelect(MakeableButton.makeDefault())
-            }),
-
-            .init(title: "Field", onTap: {
-                onSelect(MakeableField.makeDefault())
-            }),
-
-            .init(title: "Label", onTap: {
-                onSelect(MakeableLabel.makeDefault())
-            }),
-
-            .init(title: "List", onTap: {
-                onSelect(MakeableList.makeDefault())
-            }),
-
-            .init(title: "Map", onTap: {
-                onSelect(MakeableMap.makeDefault())
-            }),
-
-            .init(title: "Toggle", onTap: {
-                onSelect(MakeableToggle.makeDefault())
-            })
-        ])
-    }
-}
-
-
 
 
 public class Armstrong: AAProvider {
@@ -331,7 +295,7 @@ extension Axis: Copying {
 }
 
 extension VariableType {
-    static var axis: VariableType { .init() } // Axis
+    static var axis: VariableType { .init(title: "Axis") } // Axis
 }
 
 public final class ButtonStyleValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -373,7 +337,7 @@ extension ButtonStyle: Copying {
 }
 
 extension VariableType {
-    static var buttonStyle: VariableType { .init() } // ButtonStyle
+    static var buttonStyle: VariableType { .init(title: "ButtonStyle") } // ButtonStyle
 }
 
 public final class FontWeightValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -415,7 +379,7 @@ extension Font.Weight: Copying {
 }
 
 extension VariableType {
-    static var fontWeight: VariableType { .init() } // Font.Weight
+    static var fontWeight: VariableType { .init(title: "FontWeight") } // Font.Weight
 }
 
 public final class NumericTypeValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -457,7 +421,7 @@ extension NumericType: Copying {
 }
 
 extension VariableType {
-    static var numericType: VariableType { .init() } // NumericType
+    static var numericType: VariableType { .init(title: "NumericType") } // NumericType
 }
 
 public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -499,7 +463,7 @@ extension TextAlignment: Copying {
 }
 
 extension VariableType {
-    static var textAlignment: VariableType { .init() } // TextAlignment
+    static var textAlignment: VariableType { .init(title: "TextAlignment") } // TextAlignment
 }
 
 
@@ -556,7 +520,7 @@ extension Float: Copying {
 }
 
 extension VariableType {
-    static var float: VariableType { .init() } // Float
+    static var float: VariableType { .init(title: "Float") } // Float
 }
 
 public final class IntValue: EditableVariableValue, Codable, Copying, NumericValue {
@@ -609,7 +573,7 @@ extension Int: Copying {
 }
 
 extension VariableType {
-    static var int: VariableType { .init() } // Int
+    static var int: VariableType { .init(title: "Int") } // Int
 }
 
 
@@ -659,7 +623,7 @@ extension APIValueStep {
 }
 
 extension VariableType {
-    static var aPIStep: VariableType { .init() } // APIValueStep
+    static var aPIStep: VariableType { .init(title: "APIStep") } // APIValueStep
 }
 
 // AddToVarStep
@@ -713,7 +677,7 @@ extension AddToVarStep {
 }
 
 extension VariableType {
-    static var addToVarStep: VariableType { .init() } // AddToVarStep
+    static var addToVarStep: VariableType { .init(title: "AddToVarStep") } // AddToVarStep
 }
 
 // AnyMakeableView
@@ -728,7 +692,7 @@ extension AnyMakeableView: Copying {
 
 
 extension VariableType {
-    static var view: VariableType { .init() } // AnyMakeableView
+    static var view: VariableType { .init(title: "AnyView") } // AnyMakeableView
 }
 
 // AnyValue
@@ -743,7 +707,7 @@ extension AnyValue: Copying {
 
 
 extension VariableType {
-    static var anyValue: VariableType { .init() } // AnyValue
+    static var anyValue: VariableType { .init(title: "Any") } // AnyValue
 }
 
 // ArrayValue
@@ -759,7 +723,7 @@ extension ArrayValue: Copying {
 
 
 extension VariableType {
-    static var list: VariableType { .init() } // ArrayValue
+    static var list: VariableType { .init(title: "Array") } // ArrayValue
 }
 
 // ArrayValueStep
@@ -813,7 +777,7 @@ extension ArrayValueStep {
 }
 
 extension VariableType {
-    static var arrayStep: VariableType { .init() } // ArrayValueStep
+    static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
 }
 
 // BoolValue
@@ -828,7 +792,7 @@ extension BoolValue: Copying {
 
 
 extension VariableType {
-    static var boolean: VariableType { .init() } // BoolValue
+    static var boolean: VariableType { .init(title: "Bool") } // BoolValue
 }
 
 // ColorValue
@@ -843,7 +807,7 @@ extension ColorValue: Copying {
 
 
 extension VariableType {
-    static var color: VariableType { .init() } // ColorValue
+    static var color: VariableType { .init(title: "Color") } // ColorValue
 }
 
 // ComparisonTypeValue
@@ -858,7 +822,7 @@ extension ComparisonTypeValue: Copying {
 
 
 extension VariableType {
-    static var comparisonType: VariableType { .init() } // ComparisonTypeValue
+    static var comparisonType: VariableType { .init(title: "ComparisonType") } // ComparisonTypeValue
 }
 
 // ComparisonValue
@@ -919,7 +883,7 @@ extension ComparisonValue {
 }
 
 extension VariableType {
-    static var comparison: VariableType { .init() } // ComparisonValue
+    static var comparison: VariableType { .init(title: "Comparison") } // ComparisonValue
 }
 
 // ConditionalActionValue
@@ -973,7 +937,7 @@ extension ConditionalActionValue {
 }
 
 extension VariableType {
-    static var conditionalAction: VariableType { .init() } // ConditionalActionValue
+    static var conditionalAction: VariableType { .init(title: "ConditionalAction") } // ConditionalActionValue
 }
 
 // DecodeArrayStep
@@ -1020,7 +984,7 @@ extension DecodeArrayStep {
 }
 
 extension VariableType {
-    static var decodeArrayStep: VariableType { .init() } // DecodeArrayStep
+    static var decodeArrayStep: VariableType { .init(title: "DecodeArrayStep") } // DecodeArrayStep
 }
 
 // DecodeDictionaryStep
@@ -1067,7 +1031,7 @@ extension DecodeDictionaryStep {
 }
 
 extension VariableType {
-    static var decodeDictionaryStep: VariableType { .init() } // DecodeDictionaryStep
+    static var decodeDictionaryStep: VariableType { .init(title: "DecodeDictionaryStep") } // DecodeDictionaryStep
 }
 
 // DictionaryKeysStep
@@ -1114,7 +1078,7 @@ extension DictionaryKeysStep {
 }
 
 extension VariableType {
-    static var dictionaryKeysStep: VariableType { .init() } // DictionaryKeysStep
+    static var dictionaryKeysStep: VariableType { .init(title: "DictionaryKeysStep") } // DictionaryKeysStep
 }
 
 // DictionaryValue
@@ -1130,7 +1094,7 @@ extension DictionaryValue: Copying {
 
 
 extension VariableType {
-    static var dictionary: VariableType { .init() } // DictionaryValue
+    static var dictionary: VariableType { .init(title: "Dictionary") } // DictionaryValue
 }
 
 // DictionaryValueForKeyStep
@@ -1184,7 +1148,7 @@ extension DictionaryValueForKeyStep {
 }
 
 extension VariableType {
-    static var dictionaryForKeyStep: VariableType { .init() } // DictionaryValueForKeyStep
+    static var dictionaryForKeyStep: VariableType { .init(title: "DictionaryForKeyStep") } // DictionaryValueForKeyStep
 }
 
 // ForEachStep
@@ -1238,7 +1202,7 @@ extension ForEachStep {
 }
 
 extension VariableType {
-    static var forEachStep: VariableType { .init() } // ForEachStep
+    static var forEachStep: VariableType { .init(title: "ForEachStep") } // ForEachStep
 }
 
 // FunctionStep
@@ -1285,7 +1249,7 @@ extension FunctionStep {
 }
 
 extension VariableType {
-    static var functionStep: VariableType { .init() } // FunctionStep
+    static var functionStep: VariableType { .init(title: "FunctionStep") } // FunctionStep
 }
 
 // GetNumberStep
@@ -1339,7 +1303,7 @@ extension GetNumberStep {
 }
 
 extension VariableType {
-    static var getNumberStep: VariableType { .init() } // GetNumberStep
+    static var getNumberStep: VariableType { .init(title: "GetNumberStep") } // GetNumberStep
 }
 
 // IfStep
@@ -1393,7 +1357,7 @@ extension IfStep {
 }
 
 extension VariableType {
-    static var ifStep: VariableType { .init() } // IfStep
+    static var ifStep: VariableType { .init(title: "IfStep") } // IfStep
 }
 
 // LocationValue
@@ -1454,7 +1418,7 @@ extension LocationValue {
 }
 
 extension VariableType {
-    static var location: VariableType { .init() } // LocationValue
+    static var location: VariableType { .init(title: "Location") } // LocationValue
 }
 
 // MakeableArray
@@ -1470,7 +1434,7 @@ extension MakeableArray: Copying {
 
 
 extension VariableType {
-    static var makeableArray: VariableType { .init() } // MakeableArray
+    static var makeableArray: VariableType { .init(title: "Array") } // MakeableArray
 }
 
 // MakeableBase
@@ -1531,7 +1495,7 @@ extension MakeableBase {
 }
 
 extension VariableType {
-    static var base: VariableType { .init() } // MakeableBase
+    static var base: VariableType { .init(title: "Base") } // MakeableBase
 }
 
 // MakeableButton
@@ -1592,7 +1556,7 @@ extension MakeableButton {
 }
 
 extension VariableType {
-    static var button: VariableType { .init() } // MakeableButton
+    static var button: VariableType { .init(title: "Button") } // MakeableButton
 }
 
 // MakeableField
@@ -1667,7 +1631,7 @@ extension MakeableField {
 }
 
 extension VariableType {
-    static var field: VariableType { .init() } // MakeableField
+    static var field: VariableType { .init(title: "Field") } // MakeableField
 }
 
 // MakeableLabel
@@ -1749,7 +1713,7 @@ extension MakeableLabel {
 }
 
 extension VariableType {
-    static var label: VariableType { .init() } // MakeableLabel
+    static var label: VariableType { .init(title: "Label") } // MakeableLabel
 }
 
 // MakeableList
@@ -1803,7 +1767,7 @@ extension MakeableList {
 }
 
 extension VariableType {
-    static var listView: VariableType { .init() } // MakeableList
+    static var listView: VariableType { .init(title: "List") } // MakeableList
 }
 
 // MakeableListRow
@@ -1862,7 +1826,7 @@ extension MakeableMap {
 }
 
 extension VariableType {
-    static var map: VariableType { .init() } // MakeableMap
+    static var map: VariableType { .init(title: "Map") } // MakeableMap
 }
 
 // MakeableToggle
@@ -1923,7 +1887,7 @@ extension MakeableToggle {
 }
 
 extension VariableType {
-    static var toggle: VariableType { .init() } // MakeableToggle
+    static var toggle: VariableType { .init(title: "Toggle") } // MakeableToggle
 }
 
 // MapStep
@@ -1977,7 +1941,7 @@ extension MapStep {
 }
 
 extension VariableType {
-    static var mapStep: VariableType { .init() } // MapStep
+    static var mapStep: VariableType { .init(title: "MapStep") } // MapStep
 }
 
 // NilValue
@@ -1991,7 +1955,7 @@ extension NilValue: Copying {
 
 
 extension VariableType {
-    static var `nil`: VariableType { .init() } // NilValue
+    static var `nil`: VariableType { .init(title: "Nil") } // NilValue
 }
 
 // NumericalOperationTypeValue
@@ -2006,7 +1970,7 @@ extension NumericalOperationTypeValue: Copying {
 
 
 extension VariableType {
-    static var numericalOperationType: VariableType { .init() } // NumericalOperationTypeValue
+    static var numericalOperationType: VariableType { .init(title: "NumericalOperationType") } // NumericalOperationTypeValue
 }
 
 // NumericalOperationValue
@@ -2067,7 +2031,7 @@ extension NumericalOperationValue {
 }
 
 extension VariableType {
-    static var numericalOperation: VariableType { .init() } // NumericalOperationValue
+    static var numericalOperation: VariableType { .init(title: "NumericalOperation") } // NumericalOperationValue
 }
 
 // OptionalValue
@@ -2082,7 +2046,7 @@ extension OptionalValue: Copying {
 
 
 extension VariableType {
-    static var optional: VariableType { .init() } // OptionalValue
+    static var optional: VariableType { .init(title: "Optional") } // OptionalValue
 }
 
 // PrintVarStep
@@ -2129,7 +2093,7 @@ extension PrintVarStep {
 }
 
 extension VariableType {
-    static var printVarStep: VariableType { .init() } // PrintVarStep
+    static var printVarStep: VariableType { .init(title: "PrintVarStep") } // PrintVarStep
 }
 
 // ResultValue
@@ -2144,7 +2108,7 @@ extension ResultValue: Copying {
 
 
 extension VariableType {
-    static var result: VariableType { .init() } // ResultValue
+    static var result: VariableType { .init(title: "Result") } // ResultValue
 }
 
 // StaticValueStep
@@ -2191,7 +2155,7 @@ extension StaticValueStep {
 }
 
 extension VariableType {
-    static var staticStep: VariableType { .init() } // StaticValueStep
+    static var staticStep: VariableType { .init(title: "StaticStep") } // StaticValueStep
 }
 
 // StepArray
@@ -2206,7 +2170,7 @@ extension StepArray: Copying {
 
 
 extension VariableType {
-    static var stepArray: VariableType { .init() } // StepArray
+    static var stepArray: VariableType { .init(title: "StepArray") } // StepArray
 }
 
 // StringValue
@@ -2221,7 +2185,7 @@ extension StringValue: Copying {
 
 
 extension VariableType {
-    static var string: VariableType { .init() } // StringValue
+    static var string: VariableType { .init(title: "String") } // StringValue
 }
 
 // TemporaryValue
@@ -2275,7 +2239,7 @@ extension TemporaryValue {
 }
 
 extension VariableType {
-    static var temporary: VariableType { .init() } // TemporaryValue
+    static var temporary: VariableType { .init(title: "Temporary") } // TemporaryValue
 }
 
 // TypeableValue
@@ -2339,7 +2303,7 @@ extension URLEncodeStep {
 }
 
 extension VariableType {
-    static var uRLEncodeStep: VariableType { .init() } // URLEncodeStep
+    static var uRLEncodeStep: VariableType { .init(title: "URLEncodeStep") } // URLEncodeStep
 }
 
 // Variable
@@ -2354,7 +2318,7 @@ extension Variable: Copying {
 
 
 extension VariableType {
-    static var variable: VariableType { .init() } // Variable
+    static var variable: VariableType { .init(title: "Variable") } // Variable
 }
 
 // VariableStep
@@ -2408,7 +2372,7 @@ extension VariableStep {
 }
 
 extension VariableType {
-    static var variableStep: VariableType { .init() } // VariableStep
+    static var variableStep: VariableType { .init(title: "VariableStep") } // VariableStep
 }
 
 // VariableTypeValue
@@ -2423,8 +2387,9 @@ extension VariableTypeValue: Copying {
 
 
 extension VariableType {
-    static var type: VariableType { .init() } // VariableTypeValue
+    static var type: VariableType { .init(title: "VariableType") } // VariableTypeValue
 }
+
 
 
 
