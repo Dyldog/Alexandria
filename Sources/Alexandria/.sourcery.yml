@@ -1,0 +1,11 @@
+sources:
+  include:
+    - .
+    - ../../../Armstrong/Sources
+  exclude:
+    - ../../../Armstrong/Sources/Armstrong/Views/MakeableStack.swift
+    - ../../../Armstrong/Sources/Armstrong/Steps/SetVarStep.swift
+templates:
+  - ../../Templates
+  - ../../../Armstrong/Templates
+output: Generated.swift
