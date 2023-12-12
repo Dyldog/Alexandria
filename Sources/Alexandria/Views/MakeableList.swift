@@ -71,27 +71,6 @@ public final class MakeableList: MakeableView {
     }
 }
 
-//extension MakeableList: Codable {
-//    enum CodingKeys: String, CodingKey {
-//        case data
-//        case view
-//    }
-//    
-//    convenience init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.init(
-//            data: try container.decode(TypedValue<ArrayValue>.self, forKey: .data),
-//            view: try container.decode(AnyMakeableView.self, forKey: .view)
-//        )
-//    }
-//    
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//        try container.encode(view, forKey: .view)
-//        try container.encode(data, forKey: .data)
-//    }
-//}
-
 public struct MakeableListView: View {
     let isRunning: Bool
     let showEditControls: Bool

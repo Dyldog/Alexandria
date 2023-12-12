@@ -16,9 +16,11 @@ public class Alexandria: AAProvider {
         ForEachStep.self,
         FunctionStep.self,
         GetNumberStep.self,
+        GetSavedDataStep.self,
         IfStep.self,
         MapStep.self,
         PrintVarStep.self,
+        SaveDataStep.self,
         StaticValueStep.self,
         URLEncodeStep.self,
         VariableStep.self
@@ -29,7 +31,6 @@ public class Alexandria: AAProvider {
     APIValueStep.self,
     AddToVarStep.self,
     AnyMakeableView.self,
-    AnyValue.self,
     ArrayValue.self,
     ArrayValueStep.self,
     BoolValue.self,
@@ -45,10 +46,9 @@ public class Alexandria: AAProvider {
     ForEachStep.self,
     FunctionStep.self,
     GetNumberStep.self,
+    GetSavedDataStep.self,
     IfStep.self,
     LocationValue.self,
-    MakeableArray.self,
-    MakeableBase.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -57,31 +57,23 @@ public class Alexandria: AAProvider {
     MakeableToggle.self,
     MapStep.self,
     NilValue.self,
-    NumericalOperationTypeValue.self,
-    NumericalOperationValue.self,
     OptionalValue.self,
     PrintVarStep.self,
     ResultValue.self,
+    SaveDataStep.self,
     StaticValueStep.self,
-    StepArray.self,
-    StringValue.self,
     TemporaryValue.self,
     URLEncodeStep.self,
     Variable.self,
     VariableStep.self,
     VariableTypeValue.self,
-    FloatValue.self,
-    IntValue.self,
-    AxisValue.self,
     ButtonStyleValue.self,
     FontWeightValue.self,
-    NumericTypeValue.self,
     TextAlignmentValue.self
     ]
     }
     public static var views: [any MakeableView.Type] {
     [
-    MakeableBase.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -94,30 +86,6 @@ public class Alexandria: AAProvider {
 
 import Armstrong
 import DylKit
-
-public enum NumericType: String, Codable, CaseIterable {
-    public static var defaultValue: NumericType = .int
-    public var title: String { rawValue.capitalized }
-
-    case float
-    case int
-    public func make(from string: String) throws -> any VariableValue {
-        switch self {
-        case .float:
-            guard let value = Float(string) else { throw VariableValueError.wrongTypeForOperation }
-            return FloatValue(value: value)
-        case .int:
-            guard let value = Int(string) else { throw VariableValueError.wrongTypeForOperation }
-            return IntValue(value: value)
-        }
-    }
-}
-
-extension NumericType: CodeRepresentable {
-    public var codeRepresentation: String {
-        title
-    }
-}
 
 
 
@@ -137,9 +105,11 @@ public class Armstrong: AAProvider {
         ForEachStep.self,
         FunctionStep.self,
         GetNumberStep.self,
+        GetSavedDataStep.self,
         IfStep.self,
         MapStep.self,
         PrintVarStep.self,
+        SaveDataStep.self,
         StaticValueStep.self,
         URLEncodeStep.self,
         VariableStep.self
@@ -150,7 +120,6 @@ public class Armstrong: AAProvider {
     APIValueStep.self,
     AddToVarStep.self,
     AnyMakeableView.self,
-    AnyValue.self,
     ArrayValue.self,
     ArrayValueStep.self,
     BoolValue.self,
@@ -166,10 +135,9 @@ public class Armstrong: AAProvider {
     ForEachStep.self,
     FunctionStep.self,
     GetNumberStep.self,
+    GetSavedDataStep.self,
     IfStep.self,
     LocationValue.self,
-    MakeableArray.self,
-    MakeableBase.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -178,31 +146,23 @@ public class Armstrong: AAProvider {
     MakeableToggle.self,
     MapStep.self,
     NilValue.self,
-    NumericalOperationTypeValue.self,
-    NumericalOperationValue.self,
     OptionalValue.self,
     PrintVarStep.self,
     ResultValue.self,
+    SaveDataStep.self,
     StaticValueStep.self,
-    StepArray.self,
-    StringValue.self,
     TemporaryValue.self,
     URLEncodeStep.self,
     Variable.self,
     VariableStep.self,
     VariableTypeValue.self,
-    FloatValue.self,
-    IntValue.self,
-    AxisValue.self,
     ButtonStyleValue.self,
     FontWeightValue.self,
-    NumericTypeValue.self,
     TextAlignmentValue.self
     ]
     }
     public static var views: [any MakeableView.Type] {
     [
-    MakeableBase.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -217,11 +177,6 @@ import SwiftUI
 
 
 
-extension MakeableBase {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableBaseView(isRunning: isRunning, showEditControls: showEditControls, base: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
-    }
-}
 extension MakeableButton {
     public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableButtonView(isRunning: isRunning, showEditControls: showEditControls, button: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
@@ -255,48 +210,6 @@ extension MakeableToggle {
 
 
 
-
-public final class AxisValue: PrimitiveEditableVariableValue, Codable, Copying {
-
-    public static var type: VariableType { .axis }
-    public static var defaultValue: Axis { .defaultValue }
-    public var value: Axis
-    public init(value: Axis) {
-        self.value = value
-    }
-    public static func makeDefault() -> AxisValue {
-        .init(value: defaultValue)
-    }
-    public func add(_ other: VariableValue) throws -> VariableValue {
-        throw VariableValueError.variableCannotPerformOperation(Self.type, "add")
-    }
-    public var protoString: String { "\(value.title)" }
-    public var valueString: String { protoString }
-    public func value(with variables: Variables) async throws -> VariableValue {
-        self
-    }
-    public func copy() -> AxisValue {
-        .init(
-            value: value
-        )
-    }
-}
-
-extension AxisValue: CodeRepresentable {
-    public var codeRepresentation: String {
-        value.codeRepresentation
-    }
-}
-
-extension Axis: Copying {
-    public func copy() -> Axis {
-        return self
-    }
-}
-
-extension VariableType {
-    static var axis: VariableType { .init(title: "Axis") } // Axis
-}
 
 public final class ButtonStyleValue: PrimitiveEditableVariableValue, Codable, Copying {
 
@@ -337,7 +250,7 @@ extension ButtonStyle: Copying {
 }
 
 extension VariableType {
-    static var buttonStyle: VariableType { .init(title: "ButtonStyle") } // ButtonStyle
+    public static var buttonStyle: VariableType { .init(title: "ButtonStyle") } // ButtonStyle
 }
 
 public final class FontWeightValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -379,49 +292,7 @@ extension Font.Weight: Copying {
 }
 
 extension VariableType {
-    static var fontWeight: VariableType { .init(title: "FontWeight") } // Font.Weight
-}
-
-public final class NumericTypeValue: PrimitiveEditableVariableValue, Codable, Copying {
-
-    public static var type: VariableType { .numericType }
-    public static var defaultValue: NumericType { .defaultValue }
-    public var value: NumericType
-    public init(value: NumericType) {
-        self.value = value
-    }
-    public static func makeDefault() -> NumericTypeValue {
-        .init(value: defaultValue)
-    }
-    public func add(_ other: VariableValue) throws -> VariableValue {
-        throw VariableValueError.variableCannotPerformOperation(Self.type, "add")
-    }
-    public var protoString: String { "\(value.title)" }
-    public var valueString: String { protoString }
-    public func value(with variables: Variables) async throws -> VariableValue {
-        self
-    }
-    public func copy() -> NumericTypeValue {
-        .init(
-            value: value
-        )
-    }
-}
-
-extension NumericTypeValue: CodeRepresentable {
-    public var codeRepresentation: String {
-        value.codeRepresentation
-    }
-}
-
-extension NumericType: Copying {
-    public func copy() -> NumericType {
-        return self
-    }
-}
-
-extension VariableType {
-    static var numericType: VariableType { .init(title: "NumericType") } // NumericType
+    public static var fontWeight: VariableType { .init(title: "FontWeight") } // Font.Weight
 }
 
 public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -463,118 +334,12 @@ extension TextAlignment: Copying {
 }
 
 extension VariableType {
-    static var textAlignment: VariableType { .init(title: "TextAlignment") } // TextAlignment
+    public static var textAlignment: VariableType { .init(title: "TextAlignment") } // TextAlignment
 }
 
 
 
 
-
-public final class FloatValue: EditableVariableValue, Codable, Copying, NumericValue {
-    public static var type: VariableType { .float }
-    public var value: Float
-    public static var defaultValue: Float = .defaultValue
-    public init(value: Float) {
-        self.value = value
-    }
-    public static func makeDefault() -> FloatValue {
-        .init(value: Self.defaultValue)
-    }
-    public func editView(title: String, onUpdate: @escaping (FloatValue) -> Void) -> AnyView {
-        TextField("", text: .init(get: { [weak self] in
-            self?.protoString ?? "ERROR"
-        }, set: { [weak self] in
-            guard let self = self else { return }
-            self.value = Float($0) ?? self.value
-            onUpdate(self)
-        })).any
-    }
-    public func add(_ other: VariableValue) throws -> VariableValue {
-        guard let other = other as? FloatValue else { throw VariableValueError.wrongTypeForOperation }
-        self.value = self.value + other.value
-        return self
-    }
-    public var protoString: String { "\(value)" }
-    public var valueString: String { "\(value)"}
-    public func value(with variables: Variables) throws -> VariableValue {
-        self
-    }
-    public func copy() -> FloatValue {
-        .init(
-            value: value
-        )
-    }
-}
-
-extension FloatValue: CodeRepresentable {
-    public var codeRepresentation: String {
-        "\(value)"
-    }
-}
-
-extension Float: Copying {
-    public func copy() -> Float {
-        return Float(
-        )
-    }
-}
-
-extension VariableType {
-    static var float: VariableType { .init(title: "Float") } // Float
-}
-
-public final class IntValue: EditableVariableValue, Codable, Copying, NumericValue {
-    public static var type: VariableType { .int }
-    public var value: Int
-    public static var defaultValue: Int = .defaultValue
-    public init(value: Int) {
-        self.value = value
-    }
-    public static func makeDefault() -> IntValue {
-        .init(value: Self.defaultValue)
-    }
-    public func editView(title: String, onUpdate: @escaping (IntValue) -> Void) -> AnyView {
-        TextField("", text: .init(get: { [weak self] in
-            self?.protoString ?? "ERROR"
-        }, set: { [weak self] in
-            guard let self = self else { return }
-            self.value = Int($0) ?? self.value
-            onUpdate(self)
-        })).any
-    }
-    public func add(_ other: VariableValue) throws -> VariableValue {
-        guard let other = other as? IntValue else { throw VariableValueError.wrongTypeForOperation }
-        self.value = self.value + other.value
-        return self
-    }
-    public var protoString: String { "\(value)" }
-    public var valueString: String { "\(value)"}
-    public func value(with variables: Variables) throws -> VariableValue {
-        self
-    }
-    public func copy() -> IntValue {
-        .init(
-            value: value
-        )
-    }
-}
-
-extension IntValue: CodeRepresentable {
-    public var codeRepresentation: String {
-        "\(value)"
-    }
-}
-
-extension Int: Copying {
-    public func copy() -> Int {
-        return Int(
-        )
-    }
-}
-
-extension VariableType {
-    static var int: VariableType { .init(title: "Int") } // Int
-}
 
 
 
@@ -584,7 +349,7 @@ extension VariableType {
 extension APIValueStep: Copying {
     public func copy() -> APIValueStep {
         return APIValueStep(
-                    url: url.copy() as! AnyValue
+                    url: url
         )
     }
 }
@@ -623,7 +388,7 @@ extension APIValueStep {
 }
 
 extension VariableType {
-    static var aPIStep: VariableType { .init(title: "APIStep") } // APIValueStep
+    public static var aPIStep: VariableType { .init(title: "APIStep") } // APIValueStep
 }
 
 // AddToVarStep
@@ -631,8 +396,8 @@ extension VariableType {
 extension AddToVarStep: Copying {
     public func copy() -> AddToVarStep {
         return AddToVarStep(
-                    varName: varName.copy() as! AnyValue,
-                    value: value.copy() as! AnyValue
+                    varName: varName,
+                    value: value
         )
     }
 }
@@ -677,7 +442,7 @@ extension AddToVarStep {
 }
 
 extension VariableType {
-    static var addToVarStep: VariableType { .init(title: "AddToVarStep") } // AddToVarStep
+    public static var addToVarStep: VariableType { .init(title: "AddToVarStep") } // AddToVarStep
 }
 
 // AnyMakeableView
@@ -692,22 +457,7 @@ extension AnyMakeableView: Copying {
 
 
 extension VariableType {
-    static var view: VariableType { .init(title: "AnyView") } // AnyMakeableView
-}
-
-// AnyValue
-
-extension AnyValue: Copying {
-    public func copy() -> AnyValue {
-        return AnyValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    static var anyValue: VariableType { .init(title: "Any") } // AnyValue
+    public static var view: VariableType { .init(title: "AnyView") } // AnyMakeableView
 }
 
 // ArrayValue
@@ -723,7 +473,7 @@ extension ArrayValue: Copying {
 
 
 extension VariableType {
-    static var list: VariableType { .init(title: "Array") } // ArrayValue
+    public static var list: VariableType { .init(title: "Array") } // ArrayValue
 }
 
 // ArrayValueStep
@@ -731,8 +481,8 @@ extension VariableType {
 extension ArrayValueStep: Copying {
     public func copy() -> ArrayValueStep {
         return ArrayValueStep(
-                    array: array.copy() as! AnyValue,
-                    index: index.copy() as! AnyValue
+                    array: array,
+                    index: index
         )
     }
 }
@@ -777,7 +527,7 @@ extension ArrayValueStep {
 }
 
 extension VariableType {
-    static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
+    public static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
 }
 
 // BoolValue
@@ -792,7 +542,7 @@ extension BoolValue: Copying {
 
 
 extension VariableType {
-    static var boolean: VariableType { .init(title: "Bool") } // BoolValue
+    public static var boolean: VariableType { .init(title: "Bool") } // BoolValue
 }
 
 // ColorValue
@@ -807,7 +557,7 @@ extension ColorValue: Copying {
 
 
 extension VariableType {
-    static var color: VariableType { .init(title: "Color") } // ColorValue
+    public static var color: VariableType { .init(title: "Color") } // ColorValue
 }
 
 // ComparisonTypeValue
@@ -822,7 +572,7 @@ extension ComparisonTypeValue: Copying {
 
 
 extension VariableType {
-    static var comparisonType: VariableType { .init(title: "ComparisonType") } // ComparisonTypeValue
+    public static var comparisonType: VariableType { .init(title: "ComparisonType") } // ComparisonTypeValue
 }
 
 // ComparisonValue
@@ -830,9 +580,9 @@ extension VariableType {
 extension ComparisonValue: Copying {
     public func copy() -> ComparisonValue {
         return ComparisonValue(
-                    lhs: lhs.copy() as! AnyValue,
-                    rhs: rhs.copy() as! AnyValue,
-                    comparison: comparison.copy() as! ComparisonTypeValue
+                    lhs: lhs,
+                    rhs: rhs,
+                    comparison: comparison.copy()
         )
     }
 }
@@ -883,7 +633,7 @@ extension ComparisonValue {
 }
 
 extension VariableType {
-    static var comparison: VariableType { .init(title: "Comparison") } // ComparisonValue
+    public static var comparison: VariableType { .init(title: "Comparison") } // ComparisonValue
 }
 
 // ConditionalActionValue
@@ -891,8 +641,8 @@ extension VariableType {
 extension ConditionalActionValue: Copying {
     public func copy() -> ConditionalActionValue {
         return ConditionalActionValue(
-                    ifCondition: ifCondition.copy() as! ComparisonValue,
-                    ifSteps: ifSteps.copy() as! StepArray
+                    ifCondition: ifCondition.copy(),
+                    ifSteps: ifSteps
         )
     }
 }
@@ -937,7 +687,7 @@ extension ConditionalActionValue {
 }
 
 extension VariableType {
-    static var conditionalAction: VariableType { .init(title: "ConditionalAction") } // ConditionalActionValue
+    public static var conditionalAction: VariableType { .init(title: "ConditionalAction") } // ConditionalActionValue
 }
 
 // DecodeArrayStep
@@ -945,7 +695,7 @@ extension VariableType {
 extension DecodeArrayStep: Copying {
     public func copy() -> DecodeArrayStep {
         return DecodeArrayStep(
-                    value: value.copy() as! TypedValue<IntValue>
+                    value: value.copy()
         )
     }
 }
@@ -984,7 +734,7 @@ extension DecodeArrayStep {
 }
 
 extension VariableType {
-    static var decodeArrayStep: VariableType { .init(title: "DecodeArrayStep") } // DecodeArrayStep
+    public static var decodeArrayStep: VariableType { .init(title: "DecodeArrayStep") } // DecodeArrayStep
 }
 
 // DecodeDictionaryStep
@@ -992,7 +742,7 @@ extension VariableType {
 extension DecodeDictionaryStep: Copying {
     public func copy() -> DecodeDictionaryStep {
         return DecodeDictionaryStep(
-                    value: value.copy() as! AnyValue
+                    value: value
         )
     }
 }
@@ -1031,7 +781,7 @@ extension DecodeDictionaryStep {
 }
 
 extension VariableType {
-    static var decodeDictionaryStep: VariableType { .init(title: "DecodeDictionaryStep") } // DecodeDictionaryStep
+    public static var decodeDictionaryStep: VariableType { .init(title: "DecodeDictionaryStep") } // DecodeDictionaryStep
 }
 
 // DictionaryKeysStep
@@ -1039,7 +789,7 @@ extension VariableType {
 extension DictionaryKeysStep: Copying {
     public func copy() -> DictionaryKeysStep {
         return DictionaryKeysStep(
-                    dictionary: dictionary.copy() as! TypedValue<DictionaryValue>
+                    dictionary: dictionary.copy()
         )
     }
 }
@@ -1078,7 +828,7 @@ extension DictionaryKeysStep {
 }
 
 extension VariableType {
-    static var dictionaryKeysStep: VariableType { .init(title: "DictionaryKeysStep") } // DictionaryKeysStep
+    public static var dictionaryKeysStep: VariableType { .init(title: "DictionaryKeysStep") } // DictionaryKeysStep
 }
 
 // DictionaryValue
@@ -1086,7 +836,7 @@ extension VariableType {
 extension DictionaryValue: Copying {
     public func copy() -> DictionaryValue {
         return DictionaryValue(
-                    type: type.copy() as! VariableTypeValue,
+                    type: type.copy(),
                     elements: elements
         )
     }
@@ -1094,7 +844,7 @@ extension DictionaryValue: Copying {
 
 
 extension VariableType {
-    static var dictionary: VariableType { .init(title: "Dictionary") } // DictionaryValue
+    public static var dictionary: VariableType { .init(title: "Dictionary") } // DictionaryValue
 }
 
 // DictionaryValueForKeyStep
@@ -1102,8 +852,8 @@ extension VariableType {
 extension DictionaryValueForKeyStep: Copying {
     public func copy() -> DictionaryValueForKeyStep {
         return DictionaryValueForKeyStep(
-                    dictionary: dictionary.copy() as! TypedValue<DictionaryValue>,
-                    key: key.copy() as! AnyValue
+                    dictionary: dictionary.copy(),
+                    key: key
         )
     }
 }
@@ -1148,7 +898,7 @@ extension DictionaryValueForKeyStep {
 }
 
 extension VariableType {
-    static var dictionaryForKeyStep: VariableType { .init(title: "DictionaryForKeyStep") } // DictionaryValueForKeyStep
+    public static var dictionaryForKeyStep: VariableType { .init(title: "DictionaryForKeyStep") } // DictionaryValueForKeyStep
 }
 
 // ForEachStep
@@ -1156,8 +906,8 @@ extension VariableType {
 extension ForEachStep: Copying {
     public func copy() -> ForEachStep {
         return ForEachStep(
-                    values: values.copy() as! TypedValue<ArrayValue>,
-                    loop: loop.copy() as! StepArray
+                    values: values.copy(),
+                    loop: loop
         )
     }
 }
@@ -1202,7 +952,7 @@ extension ForEachStep {
 }
 
 extension VariableType {
-    static var forEachStep: VariableType { .init(title: "ForEachStep") } // ForEachStep
+    public static var forEachStep: VariableType { .init(title: "ForEachStep") } // ForEachStep
 }
 
 // FunctionStep
@@ -1210,7 +960,7 @@ extension VariableType {
 extension FunctionStep: Copying {
     public func copy() -> FunctionStep {
         return FunctionStep(
-                    functionName: functionName.copy() as! AnyValue
+                    functionName: functionName
         )
     }
 }
@@ -1249,7 +999,7 @@ extension FunctionStep {
 }
 
 extension VariableType {
-    static var functionStep: VariableType { .init(title: "FunctionStep") } // FunctionStep
+    public static var functionStep: VariableType { .init(title: "FunctionStep") } // FunctionStep
 }
 
 // GetNumberStep
@@ -1257,7 +1007,7 @@ extension VariableType {
 extension GetNumberStep: Copying {
     public func copy() -> GetNumberStep {
         return GetNumberStep(
-                    value: value.copy() as! AnyValue,
+                    value: value,
                     numberType: numberType
         )
     }
@@ -1303,7 +1053,54 @@ extension GetNumberStep {
 }
 
 extension VariableType {
-    static var getNumberStep: VariableType { .init(title: "GetNumberStep") } // GetNumberStep
+    public static var getNumberStep: VariableType { .init(title: "GetNumberStep") } // GetNumberStep
+}
+
+// GetSavedDataStep
+
+extension GetSavedDataStep: Copying {
+    public func copy() -> GetSavedDataStep {
+        return GetSavedDataStep(
+                    key: key.copy()
+        )
+    }
+}
+
+extension GetSavedDataStep {
+     public enum Properties: String, ViewProperty {
+        case key
+        public var defaultValue: any EditableVariableValue {
+            switch self {
+            case .key: return GetSavedDataStep.defaultValue(for: .key)
+            }
+        }
+    }
+    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
+        .init(
+            key: factory(.key) as! TypedValue<StringValue>
+        )
+    }
+
+    public static func makeDefault() -> Self {
+        .init(
+            key: Properties.key.defaultValue as! TypedValue<StringValue>
+        )
+    }
+    public func value(for property: Properties) -> any EditableVariableValue {
+        switch property {
+            case .key: return key
+        }
+    }
+
+    public func set(_ value: Any, for property: Properties) {
+        switch property {
+            case .key: self.key = value as! TypedValue<StringValue>
+        }
+    }
+}
+
+extension VariableType {
+    public static var getSavedDataStep: VariableType { .init(title: "GetSavedDataStep") } // GetSavedDataStep
 }
 
 // IfStep
@@ -1311,8 +1108,8 @@ extension VariableType {
 extension IfStep: Copying {
     public func copy() -> IfStep {
         return IfStep(
-                    ifAction: ifAction.copy() as! ConditionalActionValue,
-                    elseAction: elseAction.copy() as! StepArray
+                    ifAction: ifAction.copy(),
+                    elseAction: elseAction
         )
     }
 }
@@ -1357,7 +1154,7 @@ extension IfStep {
 }
 
 extension VariableType {
-    static var ifStep: VariableType { .init(title: "IfStep") } // IfStep
+    public static var ifStep: VariableType { .init(title: "IfStep") } // IfStep
 }
 
 // LocationValue
@@ -1365,9 +1162,9 @@ extension VariableType {
 extension LocationValue: Copying {
     public func copy() -> LocationValue {
         return LocationValue(
-                    name: name.copy() as! TypedValue<StringValue>,
-                    latitude: latitude.copy() as! TypedValue<FloatValue>,
-                    longitude: longitude.copy() as! TypedValue<FloatValue>
+                    name: name.copy(),
+                    latitude: latitude.copy(),
+                    longitude: longitude.copy()
         )
     }
 }
@@ -1418,84 +1215,7 @@ extension LocationValue {
 }
 
 extension VariableType {
-    static var location: VariableType { .init(title: "Location") } // LocationValue
-}
-
-// MakeableArray
-
-extension MakeableArray: Copying {
-    public func copy() -> MakeableArray {
-        return MakeableArray(
-                    value: value,
-                    axis: axis
-        )
-    }
-}
-
-
-extension VariableType {
-    static var makeableArray: VariableType { .init(title: "Array") } // MakeableArray
-}
-
-// MakeableBase
-
-extension MakeableBase: Copying {
-    public func copy() -> MakeableBase {
-        return MakeableBase(
-                    padding: padding,
-                    backgroundColor: backgroundColor.copy() as! ColorValue,
-                    cornerRadius: cornerRadius
-        )
-    }
-}
-
-extension MakeableBase {
-     public enum Properties: String, ViewProperty {
-        case padding
-        case backgroundColor
-        case cornerRadius
-        public var defaultValue: any EditableVariableValue {
-            switch self {
-            case .padding: return MakeableBase.defaultValue(for: .padding)
-            case .backgroundColor: return MakeableBase.defaultValue(for: .backgroundColor)
-            case .cornerRadius: return MakeableBase.defaultValue(for: .cornerRadius)
-            }
-        }
-    }
-    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
-        .init(
-            padding: factory(.padding) as! IntValue,
-            backgroundColor: factory(.backgroundColor) as! ColorValue,
-            cornerRadius: factory(.cornerRadius) as! IntValue
-        )
-    }
-
-    public static func makeDefault() -> Self {
-        .init(
-            padding: Properties.padding.defaultValue as! IntValue,
-            backgroundColor: Properties.backgroundColor.defaultValue as! ColorValue,
-            cornerRadius: Properties.cornerRadius.defaultValue as! IntValue
-        )
-    }
-    public func value(for property: Properties) -> any EditableVariableValue {
-        switch property {
-            case .padding: return padding
-            case .backgroundColor: return backgroundColor
-            case .cornerRadius: return cornerRadius
-        }
-    }
-
-    public func set(_ value: Any, for property: Properties) {
-        switch property {
-            case .padding: self.padding = value as! IntValue
-            case .backgroundColor: self.backgroundColor = value as! ColorValue
-            case .cornerRadius: self.cornerRadius = value as! IntValue
-        }
-    }
-}
-
-extension VariableType {
-    static var base: VariableType { .init(title: "Base") } // MakeableBase
+    public static var location: VariableType { .init(title: "Location") } // LocationValue
 }
 
 // MakeableButton
@@ -1503,9 +1223,9 @@ extension VariableType {
 extension MakeableButton: Copying {
     public func copy() -> MakeableButton {
         return MakeableButton(
-                    title: title.copy() as! MakeableLabel,
+                    title: title.copy(),
                     style: style,
-                    action: action.copy() as! StepArray
+                    action: action
         )
     }
 }
@@ -1556,7 +1276,7 @@ extension MakeableButton {
 }
 
 extension VariableType {
-    static var button: VariableType { .init(title: "Button") } // MakeableButton
+    public static var button: VariableType { .init(title: "Button") } // MakeableButton
 }
 
 // MakeableField
@@ -1564,11 +1284,12 @@ extension VariableType {
 extension MakeableField: Copying {
     public func copy() -> MakeableField {
         return MakeableField(
-                    text: text.copy() as! TemporaryValue,
+                    text: text.copy(),
                     fontSize: fontSize,
-                    onTextUpdate: onTextUpdate.copy() as! StepArray,
+                    onTextUpdate: onTextUpdate,
                     padding: padding,
-                    alignment: alignment
+                    alignment: alignment,
+                    isMultiline: isMultiline.copy()
         )
     }
 }
@@ -1580,6 +1301,7 @@ extension MakeableField {
         case onTextUpdate
         case padding
         case alignment
+        case isMultiline
         public var defaultValue: any EditableVariableValue {
             switch self {
             case .text: return MakeableField.defaultValue(for: .text)
@@ -1587,6 +1309,7 @@ extension MakeableField {
             case .onTextUpdate: return MakeableField.defaultValue(for: .onTextUpdate)
             case .padding: return MakeableField.defaultValue(for: .padding)
             case .alignment: return MakeableField.defaultValue(for: .alignment)
+            case .isMultiline: return MakeableField.defaultValue(for: .isMultiline)
             }
         }
     }
@@ -1596,7 +1319,8 @@ extension MakeableField {
             fontSize: factory(.fontSize) as! IntValue,
             onTextUpdate: factory(.onTextUpdate) as! StepArray,
             padding: factory(.padding) as! IntValue,
-            alignment: factory(.alignment) as! TextAlignmentValue
+            alignment: factory(.alignment) as! TextAlignmentValue,
+            isMultiline: factory(.isMultiline) as! BoolValue
         )
     }
 
@@ -1606,7 +1330,8 @@ extension MakeableField {
             fontSize: Properties.fontSize.defaultValue as! IntValue,
             onTextUpdate: Properties.onTextUpdate.defaultValue as! StepArray,
             padding: Properties.padding.defaultValue as! IntValue,
-            alignment: Properties.alignment.defaultValue as! TextAlignmentValue
+            alignment: Properties.alignment.defaultValue as! TextAlignmentValue,
+            isMultiline: Properties.isMultiline.defaultValue as! BoolValue
         )
     }
     public func value(for property: Properties) -> any EditableVariableValue {
@@ -1616,6 +1341,7 @@ extension MakeableField {
             case .onTextUpdate: return onTextUpdate
             case .padding: return padding
             case .alignment: return alignment
+            case .isMultiline: return isMultiline
         }
     }
 
@@ -1626,12 +1352,13 @@ extension MakeableField {
             case .onTextUpdate: self.onTextUpdate = value as! StepArray
             case .padding: self.padding = value as! IntValue
             case .alignment: self.alignment = value as! TextAlignmentValue
+            case .isMultiline: self.isMultiline = value as! BoolValue
         }
     }
 }
 
 extension VariableType {
-    static var field: VariableType { .init(title: "Field") } // MakeableField
+    public static var field: VariableType { .init(title: "Field") } // MakeableField
 }
 
 // MakeableLabel
@@ -1639,12 +1366,13 @@ extension VariableType {
 extension MakeableLabel: Copying {
     public func copy() -> MakeableLabel {
         return MakeableLabel(
-                    text: text.copy() as! AnyValue,
+                    text: text,
                     fontSize: fontSize,
                     fontWeight: fontWeight,
-                    italic: italic.copy() as! BoolValue,
-                    base: base.copy() as! MakeableBase,
-                    textColor: textColor.copy() as! ColorValue
+                    italic: italic.copy(),
+                    base: base,
+                    textColor: textColor.copy(),
+                    isMultiline: isMultiline.copy()
         )
     }
 }
@@ -1657,6 +1385,7 @@ extension MakeableLabel {
         case italic
         case base
         case textColor
+        case isMultiline
         public var defaultValue: any EditableVariableValue {
             switch self {
             case .text: return MakeableLabel.defaultValue(for: .text)
@@ -1665,6 +1394,7 @@ extension MakeableLabel {
             case .italic: return MakeableLabel.defaultValue(for: .italic)
             case .base: return MakeableLabel.defaultValue(for: .base)
             case .textColor: return MakeableLabel.defaultValue(for: .textColor)
+            case .isMultiline: return MakeableLabel.defaultValue(for: .isMultiline)
             }
         }
     }
@@ -1675,7 +1405,8 @@ extension MakeableLabel {
             fontWeight: factory(.fontWeight) as! FontWeightValue,
             italic: factory(.italic) as! BoolValue,
             base: factory(.base) as! MakeableBase,
-            textColor: factory(.textColor) as! ColorValue
+            textColor: factory(.textColor) as! ColorValue,
+            isMultiline: factory(.isMultiline) as! BoolValue
         )
     }
 
@@ -1686,7 +1417,8 @@ extension MakeableLabel {
             fontWeight: Properties.fontWeight.defaultValue as! FontWeightValue,
             italic: Properties.italic.defaultValue as! BoolValue,
             base: Properties.base.defaultValue as! MakeableBase,
-            textColor: Properties.textColor.defaultValue as! ColorValue
+            textColor: Properties.textColor.defaultValue as! ColorValue,
+            isMultiline: Properties.isMultiline.defaultValue as! BoolValue
         )
     }
     public func value(for property: Properties) -> any EditableVariableValue {
@@ -1697,6 +1429,7 @@ extension MakeableLabel {
             case .italic: return italic
             case .base: return base
             case .textColor: return textColor
+            case .isMultiline: return isMultiline
         }
     }
 
@@ -1708,12 +1441,13 @@ extension MakeableLabel {
             case .italic: self.italic = value as! BoolValue
             case .base: self.base = value as! MakeableBase
             case .textColor: self.textColor = value as! ColorValue
+            case .isMultiline: self.isMultiline = value as! BoolValue
         }
     }
 }
 
 extension VariableType {
-    static var label: VariableType { .init(title: "Label") } // MakeableLabel
+    public static var label: VariableType { .init(title: "Label") } // MakeableLabel
 }
 
 // MakeableList
@@ -1721,8 +1455,8 @@ extension VariableType {
 extension MakeableList: Copying {
     public func copy() -> MakeableList {
         return MakeableList(
-                    data: data.copy() as! TypedValue<ArrayValue>,
-                    view: view.copy() as! AnyMakeableView
+                    data: data.copy(),
+                    view: view.copy()
         )
     }
 }
@@ -1767,7 +1501,7 @@ extension MakeableList {
 }
 
 extension VariableType {
-    static var listView: VariableType { .init(title: "List") } // MakeableList
+    public static var listView: VariableType { .init(title: "List") } // MakeableList
 }
 
 // MakeableListRow
@@ -1780,8 +1514,8 @@ extension VariableType {
 extension MakeableMap: Copying {
     public func copy() -> MakeableMap {
         return MakeableMap(
-                    locations: locations.copy() as! TypedValue<ArrayValue>,
-                    zoomFollowsNewAnnotations: zoomFollowsNewAnnotations.copy() as! BoolValue
+                    locations: locations.copy(),
+                    zoomFollowsNewAnnotations: zoomFollowsNewAnnotations.copy()
         )
     }
 }
@@ -1826,7 +1560,7 @@ extension MakeableMap {
 }
 
 extension VariableType {
-    static var map: VariableType { .init(title: "Map") } // MakeableMap
+    public static var map: VariableType { .init(title: "Map") } // MakeableMap
 }
 
 // MakeableToggle
@@ -1834,8 +1568,8 @@ extension VariableType {
 extension MakeableToggle: Copying {
     public func copy() -> MakeableToggle {
         return MakeableToggle(
-                    isOn: isOn.copy() as! TemporaryValue,
-                    onToggleUpdate: onToggleUpdate.copy() as! StepArray,
+                    isOn: isOn.copy(),
+                    onToggleUpdate: onToggleUpdate,
                     padding: padding
         )
     }
@@ -1887,7 +1621,7 @@ extension MakeableToggle {
 }
 
 extension VariableType {
-    static var toggle: VariableType { .init(title: "Toggle") } // MakeableToggle
+    public static var toggle: VariableType { .init(title: "Toggle") } // MakeableToggle
 }
 
 // MapStep
@@ -1895,8 +1629,8 @@ extension VariableType {
 extension MapStep: Copying {
     public func copy() -> MapStep {
         return MapStep(
-                    value: value.copy() as! TypedValue<ArrayValue>,
-                    mapper: mapper.copy() as! StepArray
+                    value: value.copy(),
+                    mapper: mapper
         )
     }
 }
@@ -1941,7 +1675,7 @@ extension MapStep {
 }
 
 extension VariableType {
-    static var mapStep: VariableType { .init(title: "MapStep") } // MapStep
+    public static var mapStep: VariableType { .init(title: "MapStep") } // MapStep
 }
 
 // NilValue
@@ -1955,83 +1689,7 @@ extension NilValue: Copying {
 
 
 extension VariableType {
-    static var `nil`: VariableType { .init(title: "Nil") } // NilValue
-}
-
-// NumericalOperationTypeValue
-
-extension NumericalOperationTypeValue: Copying {
-    public func copy() -> NumericalOperationTypeValue {
-        return NumericalOperationTypeValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    static var numericalOperationType: VariableType { .init(title: "NumericalOperationType") } // NumericalOperationTypeValue
-}
-
-// NumericalOperationValue
-
-extension NumericalOperationValue: Copying {
-    public func copy() -> NumericalOperationValue {
-        return NumericalOperationValue(
-                    lhs: lhs.copy() as! AnyValue,
-                    rhs: rhs.copy() as! AnyValue,
-                    operation: operation.copy() as! NumericalOperationTypeValue
-        )
-    }
-}
-
-extension NumericalOperationValue {
-     public enum Properties: String, ViewProperty {
-        case lhs
-        case rhs
-        case operation
-        public var defaultValue: any EditableVariableValue {
-            switch self {
-            case .lhs: return NumericalOperationValue.defaultValue(for: .lhs)
-            case .rhs: return NumericalOperationValue.defaultValue(for: .rhs)
-            case .operation: return NumericalOperationValue.defaultValue(for: .operation)
-            }
-        }
-    }
-    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
-        .init(
-            lhs: factory(.lhs) as! AnyValue,
-            rhs: factory(.rhs) as! AnyValue,
-            operation: factory(.operation) as! NumericalOperationTypeValue
-        )
-    }
-
-    public static func makeDefault() -> Self {
-        .init(
-            lhs: Properties.lhs.defaultValue as! AnyValue,
-            rhs: Properties.rhs.defaultValue as! AnyValue,
-            operation: Properties.operation.defaultValue as! NumericalOperationTypeValue
-        )
-    }
-    public func value(for property: Properties) -> any EditableVariableValue {
-        switch property {
-            case .lhs: return lhs
-            case .rhs: return rhs
-            case .operation: return operation
-        }
-    }
-
-    public func set(_ value: Any, for property: Properties) {
-        switch property {
-            case .lhs: self.lhs = value as! AnyValue
-            case .rhs: self.rhs = value as! AnyValue
-            case .operation: self.operation = value as! NumericalOperationTypeValue
-        }
-    }
-}
-
-extension VariableType {
-    static var numericalOperation: VariableType { .init(title: "NumericalOperation") } // NumericalOperationValue
+    public static var `nil`: VariableType { .init(title: "Nil") } // NilValue
 }
 
 // OptionalValue
@@ -2039,14 +1697,14 @@ extension VariableType {
 extension OptionalValue: Copying {
     public func copy() -> OptionalValue {
         return OptionalValue(
-                    value: value.copy() as! AnyValue
+                    value: value
         )
     }
 }
 
 
 extension VariableType {
-    static var optional: VariableType { .init(title: "Optional") } // OptionalValue
+    public static var optional: VariableType { .init(title: "Optional") } // OptionalValue
 }
 
 // PrintVarStep
@@ -2054,7 +1712,7 @@ extension VariableType {
 extension PrintVarStep: Copying {
     public func copy() -> PrintVarStep {
         return PrintVarStep(
-                    varName: varName.copy() as! AnyValue
+                    varName: varName
         )
     }
 }
@@ -2093,7 +1751,7 @@ extension PrintVarStep {
 }
 
 extension VariableType {
-    static var printVarStep: VariableType { .init(title: "PrintVarStep") } // PrintVarStep
+    public static var printVarStep: VariableType { .init(title: "PrintVarStep") } // PrintVarStep
 }
 
 // ResultValue
@@ -2101,14 +1759,68 @@ extension VariableType {
 extension ResultValue: Copying {
     public func copy() -> ResultValue {
         return ResultValue(
-                    steps: steps.copy() as! StepArray
+                    steps: steps
         )
     }
 }
 
 
 extension VariableType {
-    static var result: VariableType { .init(title: "Result") } // ResultValue
+    public static var result: VariableType { .init(title: "Result") } // ResultValue
+}
+
+// SaveDataStep
+
+extension SaveDataStep: Copying {
+    public func copy() -> SaveDataStep {
+        return SaveDataStep(
+                    key: key.copy(),
+                    data: data
+        )
+    }
+}
+
+extension SaveDataStep {
+     public enum Properties: String, ViewProperty {
+        case key
+        case data
+        public var defaultValue: any EditableVariableValue {
+            switch self {
+            case .key: return SaveDataStep.defaultValue(for: .key)
+            case .data: return SaveDataStep.defaultValue(for: .data)
+            }
+        }
+    }
+    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
+        .init(
+            key: factory(.key) as! TypedValue<StringValue>,
+            data: factory(.data) as! AnyValue
+        )
+    }
+
+    public static func makeDefault() -> Self {
+        .init(
+            key: Properties.key.defaultValue as! TypedValue<StringValue>,
+            data: Properties.data.defaultValue as! AnyValue
+        )
+    }
+    public func value(for property: Properties) -> any EditableVariableValue {
+        switch property {
+            case .key: return key
+            case .data: return data
+        }
+    }
+
+    public func set(_ value: Any, for property: Properties) {
+        switch property {
+            case .key: self.key = value as! TypedValue<StringValue>
+            case .data: self.data = value as! AnyValue
+        }
+    }
+}
+
+extension VariableType {
+    public static var saveDataStep: VariableType { .init(title: "SaveDataStep") } // SaveDataStep
 }
 
 // StaticValueStep
@@ -2116,7 +1828,7 @@ extension VariableType {
 extension StaticValueStep: Copying {
     public func copy() -> StaticValueStep {
         return StaticValueStep(
-                    value: value.copy() as! AnyValue
+                    value: value
         )
     }
 }
@@ -2155,37 +1867,7 @@ extension StaticValueStep {
 }
 
 extension VariableType {
-    static var staticStep: VariableType { .init(title: "StaticStep") } // StaticValueStep
-}
-
-// StepArray
-
-extension StepArray: Copying {
-    public func copy() -> StepArray {
-        return StepArray(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    static var stepArray: VariableType { .init(title: "StepArray") } // StepArray
-}
-
-// StringValue
-
-extension StringValue: Copying {
-    public func copy() -> StringValue {
-        return StringValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    static var string: VariableType { .init(title: "String") } // StringValue
+    public static var staticStep: VariableType { .init(title: "StaticStep") } // StaticValueStep
 }
 
 // TemporaryValue
@@ -2193,8 +1875,8 @@ extension VariableType {
 extension TemporaryValue: Copying {
     public func copy() -> TemporaryValue {
         return TemporaryValue(
-                    initial: initial.copy() as! AnyValue,
-                    output: output.copy() as! Variable
+                    initial: initial,
+                    output: output.copy()
         )
     }
 }
@@ -2239,7 +1921,7 @@ extension TemporaryValue {
 }
 
 extension VariableType {
-    static var temporary: VariableType { .init(title: "Temporary") } // TemporaryValue
+    public static var temporary: VariableType { .init(title: "Temporary") } // TemporaryValue
 }
 
 // TypeableValue
@@ -2264,7 +1946,7 @@ extension TypedValue: Copying {
 extension URLEncodeStep: Copying {
     public func copy() -> URLEncodeStep {
         return URLEncodeStep(
-                    value: value.copy() as! AnyValue
+                    value: value
         )
     }
 }
@@ -2303,7 +1985,7 @@ extension URLEncodeStep {
 }
 
 extension VariableType {
-    static var uRLEncodeStep: VariableType { .init(title: "URLEncodeStep") } // URLEncodeStep
+    public static var uRLEncodeStep: VariableType { .init(title: "URLEncodeStep") } // URLEncodeStep
 }
 
 // Variable
@@ -2318,7 +2000,7 @@ extension Variable: Copying {
 
 
 extension VariableType {
-    static var variable: VariableType { .init(title: "Variable") } // Variable
+    public static var variable: VariableType { .init(title: "Variable") } // Variable
 }
 
 // VariableStep
@@ -2326,8 +2008,8 @@ extension VariableType {
 extension VariableStep: Copying {
     public func copy() -> VariableStep {
         return VariableStep(
-                    varName: varName.copy() as! AnyValue,
-                    type: type.copy() as! VariableTypeValue
+                    varName: varName,
+                    type: type.copy()
         )
     }
 }
@@ -2372,7 +2054,7 @@ extension VariableStep {
 }
 
 extension VariableType {
-    static var variableStep: VariableType { .init(title: "VariableStep") } // VariableStep
+    public static var variableStep: VariableType { .init(title: "VariableStep") } // VariableStep
 }
 
 // VariableTypeValue
@@ -2387,7 +2069,7 @@ extension VariableTypeValue: Copying {
 
 
 extension VariableType {
-    static var type: VariableType { .init(title: "VariableType") } // VariableTypeValue
+    public static var type: VariableType { .init(title: "VariableType") } // VariableTypeValue
 }
 
 

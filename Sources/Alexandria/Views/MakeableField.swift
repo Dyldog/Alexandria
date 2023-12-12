@@ -18,14 +18,23 @@ struct MakeableFieldView: View {
     @Binding var error: VariableValueError?
     @State var text: String = "LOADING"
     
+    private var fieldView: some View {
+        let binding: Binding<String> = .init(get: {
+            text
+        }, set: {
+            onTextUpdate($0)
+        })
+        
+        if field.isMultiline.value {
+            return TextEditor(text: binding).any
+        } else {
+            return TextField("", text: binding).any
+        }
+    }
     var body: some View {
         VStack {
             if isRunning {
-                TextField("", text: .init(get: {
-                    text
-                }, set: {
-                    onTextUpdate($0)
-                }))
+                fieldView
                 .multilineTextAlignment(field.alignment.value)
                 .font(.system(size: CGFloat(field.fontSize.value))).any
             } else {
@@ -70,19 +79,21 @@ struct MakeableFieldView: View {
 
 public final class MakeableField: MakeableView, Codable {
     
-    public static var type: VariableType { .label }
+    public static var type: VariableType { .field }
     public var text: TemporaryValue
     public var fontSize: IntValue
     public var onTextUpdate: StepArray
     public var padding: IntValue
     public var alignment: TextAlignmentValue
+    public var isMultiline: BoolValue
     
-    public init(text: TemporaryValue, fontSize: IntValue, onTextUpdate: StepArray, padding: IntValue, alignment: TextAlignmentValue) {
+    public init(text: TemporaryValue, fontSize: IntValue, onTextUpdate: StepArray, padding: IntValue, alignment: TextAlignmentValue, isMultiline: BoolValue) {
         self.text = text
         self.fontSize = fontSize
         self.onTextUpdate = onTextUpdate
         self.padding = padding
         self.alignment = alignment
+        self.isMultiline = isMultiline
     }
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
@@ -92,6 +103,7 @@ public final class MakeableField: MakeableView, Codable {
         case .onTextUpdate: return StepArray(value: [])
         case .padding: return IntValue(value: 5)
         case .alignment: return TextAlignmentValue(value: .center)
+        case .isMultiline: return BoolValue.false
         }
     }
     

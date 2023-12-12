@@ -13,6 +13,8 @@ public final class NilValue: EditableVariableValue {
     
     public static var type: VariableType { .nil }
     
+    private var DUMMYVALUE = "DUMMY"
+    
     public var protoString: String { "NIL" }
     public var valueString: String { protoString }
     

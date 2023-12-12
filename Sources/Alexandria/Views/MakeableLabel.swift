@@ -48,6 +48,7 @@ public struct MakeableLabelView: View {
     
     public var body: some View {
         Text(text)
+            .lineLimit(label.isMultiline.value ? nil : 1)
             .font(.system(size: CGFloat(label.fontSize.value)).weight(label.fontWeight.value))
             .if(label.italic.value) { $0.italic() }
             .foregroundStyle(label.textColor.value)
@@ -69,14 +70,16 @@ public final class MakeableLabel: MakeableView {
     public var italic: BoolValue
     public var base: MakeableBase
     public var textColor: ColorValue
+    public var isMultiline: BoolValue
     
-    public init(text: AnyValue, fontSize: IntValue, fontWeight: FontWeightValue, italic: BoolValue, base: MakeableBase, textColor: ColorValue) {
+    public init(text: AnyValue, fontSize: IntValue, fontWeight: FontWeightValue, italic: BoolValue, base: MakeableBase, textColor: ColorValue, isMultiline: BoolValue) {
         self.text = text
         self.fontSize = fontSize
         self.fontWeight = fontWeight
         self.italic = italic
         self.base = base
         self.textColor = textColor
+        self.isMultiline = isMultiline
     }
     
     public static func withText(
@@ -88,7 +91,8 @@ public final class MakeableLabel: MakeableView {
             fontWeight: .init(value: bold ? .bold : .regular),
             italic: .init(value: false),
             base: .makeDefault(), 
-            textColor: .init(value: .black)
+            textColor: .init(value: .black),
+            isMultiline: .init(value: false)
         )
     }
     
@@ -107,7 +111,8 @@ public final class MakeableLabel: MakeableView {
             fontWeight: try fontWeight.value(with: variables),
             italic: try italic.value(with: variables),
             base: try base.value(with: variables),
-            textColor: try textColor.value(with: variables)
+            textColor: try textColor.value(with: variables),
+            isMultiline: try isMultiline.value(with: variables)
         )
     }
 
@@ -119,6 +124,7 @@ public final class MakeableLabel: MakeableView {
         case .italic: return BoolValue(value: false)
         case .base: return MakeableBase.makeDefault()
         case .textColor: return ColorValue(value: .black)
+        case .isMultiline: return BoolValue.false
         }
     }
 }
@@ -136,6 +142,6 @@ extension MakeableLabel: CodeRepresentable {
 
 extension MakeableLabel {
     public static func text(_ text: AnyValue, size: Int = 18) -> MakeableLabel {
-        .init(text: text, fontSize: .int(size), fontWeight: .init(value: .regular), italic: .init(value: false), base: .makeDefault(), textColor: .init(value: .black))
+        .init(text: text, fontSize: .int(size), fontWeight: .init(value: .regular), italic: .init(value: false), base: .makeDefault(), textColor: .init(value: .black), isMultiline: .false)
     }
 }

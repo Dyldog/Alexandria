@@ -94,7 +94,7 @@ struct MakeableToggleView: View {
                     try await toggle.onToggleUpdate.run(with: variables)
                 }
             } catch let error as VariableValueError {
-//                self.error = error
+                self.error = error
             } catch {
                 fatalError(error.localizedDescription)
             }

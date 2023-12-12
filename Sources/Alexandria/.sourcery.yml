@@ -3,9 +3,11 @@ sources:
     - .
     - ../../../Armstrong/Sources
   exclude:
-    - ../../../Armstrong/Sources/Armstrong/Views/MakeableStack.swift
-    - ../../../Armstrong/Sources/Armstrong/Steps/SetVarStep.swift
+    - ../../../Armstrong/Sources/Armstrong/Values/Implementations
+    - ../../../Armstrong/Sources/Armstrong/Views/Implementations
+    - ../../../Armstrong/Sources/Armstrong/Steps/Implementations
+    - ../../../Armstrong/Sources/Armstrong/Generated.swift
 templates:
   - ../../Templates
-  - ../../../Armstrong/Templates
+  - ../../../Armstrong/Templates/Shared
 output: Generated.swift
