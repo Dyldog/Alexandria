@@ -48,9 +48,9 @@ public struct MakeableLabelView: View {
     
     public var body: some View {
         Text(text)
-            .lineLimit(label.isMultiline.value ? nil : 1)
             .font(.system(size: CGFloat(label.fontSize.value)).weight(label.fontWeight.value))
             .if(label.italic.value) { $0.italic() }
+            .lineLimit(label.isMultiline.value ? nil : 1)
             .foregroundStyle(label.textColor.value)
             .base(label.base)
             .task(id: variables.hashValue) {
@@ -105,15 +105,16 @@ public final class MakeableLabel: MakeableView {
     public var valueString: String { text.valueString }
 
     public func value(with variables: Variables) async throws -> VariableValue {
-        await MakeableLabel(
-            text: AnyValue(value: try text.value(with: variables)),
-            fontSize: try fontSize.value(with: variables),
-            fontWeight: try fontWeight.value(with: variables),
-            italic: try italic.value(with: variables),
-            base: try base.value(with: variables),
-            textColor: try textColor.value(with: variables),
-            isMultiline: try isMultiline.value(with: variables)
-        )
+//        await MakeableLabel(
+//            text: AnyValue(value: try text.value(with: variables)),
+//            fontSize: try fontSize.value(with: variables),
+//            fontWeight: try fontWeight.value(with: variables),
+//            italic: try italic.value(with: variables),
+//            base: try base.value(with: variables),
+//            textColor: try textColor.value(with: variables),
+//            isMultiline: try isMultiline.value(with: variables)
+//        )
+        self
     }
 
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {

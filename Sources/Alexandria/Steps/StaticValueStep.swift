@@ -23,7 +23,7 @@ public final class StaticValueStep: ValueStep {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .value: return Variable(value: StringValue(value: "TEXT"))
+        case .value: return Variable(value: StringValue(value: "TEXT")).any
         }
     }
     

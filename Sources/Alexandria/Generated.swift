@@ -18,6 +18,7 @@ public class Alexandria: AAProvider {
         GetNumberStep.self,
         GetSavedDataStep.self,
         IfStep.self,
+        MakeRangeStep.self,
         MapStep.self,
         PrintVarStep.self,
         SaveDataStep.self,
@@ -31,7 +32,6 @@ public class Alexandria: AAProvider {
     APIValueStep.self,
     AddToVarStep.self,
     AnyMakeableView.self,
-    ArrayValue.self,
     ArrayValueStep.self,
     BoolValue.self,
     ColorValue.self,
@@ -41,7 +41,6 @@ public class Alexandria: AAProvider {
     DecodeArrayStep.self,
     DecodeDictionaryStep.self,
     DictionaryKeysStep.self,
-    DictionaryValue.self,
     DictionaryValueForKeyStep.self,
     ForEachStep.self,
     FunctionStep.self,
@@ -49,6 +48,7 @@ public class Alexandria: AAProvider {
     GetSavedDataStep.self,
     IfStep.self,
     LocationValue.self,
+    MakeRangeStep.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -56,17 +56,13 @@ public class Alexandria: AAProvider {
     MakeableMap.self,
     MakeableToggle.self,
     MapStep.self,
-    NilValue.self,
     OptionalValue.self,
     PrintVarStep.self,
-    ResultValue.self,
     SaveDataStep.self,
     StaticValueStep.self,
     TemporaryValue.self,
     URLEncodeStep.self,
-    Variable.self,
     VariableStep.self,
-    VariableTypeValue.self,
     ButtonStyleValue.self,
     FontWeightValue.self,
     TextAlignmentValue.self
@@ -107,6 +103,7 @@ public class Armstrong: AAProvider {
         GetNumberStep.self,
         GetSavedDataStep.self,
         IfStep.self,
+        MakeRangeStep.self,
         MapStep.self,
         PrintVarStep.self,
         SaveDataStep.self,
@@ -120,7 +117,6 @@ public class Armstrong: AAProvider {
     APIValueStep.self,
     AddToVarStep.self,
     AnyMakeableView.self,
-    ArrayValue.self,
     ArrayValueStep.self,
     BoolValue.self,
     ColorValue.self,
@@ -130,7 +126,6 @@ public class Armstrong: AAProvider {
     DecodeArrayStep.self,
     DecodeDictionaryStep.self,
     DictionaryKeysStep.self,
-    DictionaryValue.self,
     DictionaryValueForKeyStep.self,
     ForEachStep.self,
     FunctionStep.self,
@@ -138,6 +133,7 @@ public class Armstrong: AAProvider {
     GetSavedDataStep.self,
     IfStep.self,
     LocationValue.self,
+    MakeRangeStep.self,
     MakeableButton.self,
     MakeableField.self,
     MakeableLabel.self,
@@ -145,17 +141,13 @@ public class Armstrong: AAProvider {
     MakeableMap.self,
     MakeableToggle.self,
     MapStep.self,
-    NilValue.self,
     OptionalValue.self,
     PrintVarStep.self,
-    ResultValue.self,
     SaveDataStep.self,
     StaticValueStep.self,
     TemporaryValue.self,
     URLEncodeStep.self,
-    Variable.self,
     VariableStep.self,
-    VariableTypeValue.self,
     ButtonStyleValue.self,
     FontWeightValue.self,
     TextAlignmentValue.self
@@ -457,23 +449,7 @@ extension AnyMakeableView: Copying {
 
 
 extension VariableType {
-    public static var view: VariableType { .init(title: "AnyView") } // AnyMakeableView
-}
-
-// ArrayValue
-
-extension ArrayValue: Copying {
-    public func copy() -> ArrayValue {
-        return ArrayValue(
-                    type: type,
-                    elements: elements
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var list: VariableType { .init(title: "Array") } // ArrayValue
+    public static var view: VariableType { .init(title: "view") } // AnyMakeableView
 }
 
 // ArrayValueStep
@@ -542,7 +518,7 @@ extension BoolValue: Copying {
 
 
 extension VariableType {
-    public static var boolean: VariableType { .init(title: "Bool") } // BoolValue
+    public static var boolean: VariableType { .init(title: "boolean") } // BoolValue
 }
 
 // ColorValue
@@ -695,7 +671,7 @@ extension VariableType {
 extension DecodeArrayStep: Copying {
     public func copy() -> DecodeArrayStep {
         return DecodeArrayStep(
-                    value: value.copy()
+                    value: value
         )
     }
 }
@@ -789,7 +765,7 @@ extension VariableType {
 extension DictionaryKeysStep: Copying {
     public func copy() -> DictionaryKeysStep {
         return DictionaryKeysStep(
-                    dictionary: dictionary.copy()
+                    dictionary: dictionary
         )
     }
 }
@@ -831,28 +807,12 @@ extension VariableType {
     public static var dictionaryKeysStep: VariableType { .init(title: "DictionaryKeysStep") } // DictionaryKeysStep
 }
 
-// DictionaryValue
-
-extension DictionaryValue: Copying {
-    public func copy() -> DictionaryValue {
-        return DictionaryValue(
-                    type: type.copy(),
-                    elements: elements
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var dictionary: VariableType { .init(title: "Dictionary") } // DictionaryValue
-}
-
 // DictionaryValueForKeyStep
 
 extension DictionaryValueForKeyStep: Copying {
     public func copy() -> DictionaryValueForKeyStep {
         return DictionaryValueForKeyStep(
-                    dictionary: dictionary.copy(),
+                    dictionary: dictionary,
                     key: key
         )
     }
@@ -906,7 +866,7 @@ extension VariableType {
 extension ForEachStep: Copying {
     public func copy() -> ForEachStep {
         return ForEachStep(
-                    values: values.copy(),
+                    values: values,
                     loop: loop
         )
     }
@@ -1061,7 +1021,7 @@ extension VariableType {
 extension GetSavedDataStep: Copying {
     public func copy() -> GetSavedDataStep {
         return GetSavedDataStep(
-                    key: key.copy()
+                    key: key
         )
     }
 }
@@ -1162,9 +1122,9 @@ extension VariableType {
 extension LocationValue: Copying {
     public func copy() -> LocationValue {
         return LocationValue(
-                    name: name.copy(),
-                    latitude: latitude.copy(),
-                    longitude: longitude.copy()
+                    name: name,
+                    latitude: latitude,
+                    longitude: longitude
         )
     }
 }
@@ -1216,6 +1176,67 @@ extension LocationValue {
 
 extension VariableType {
     public static var location: VariableType { .init(title: "Location") } // LocationValue
+}
+
+// MakeRangeStep
+
+extension MakeRangeStep: Copying {
+    public func copy() -> MakeRangeStep {
+        return MakeRangeStep(
+                    start: start,
+                    end: end,
+                    step: step
+        )
+    }
+}
+
+extension MakeRangeStep {
+     public enum Properties: String, ViewProperty {
+        case start
+        case end
+        case step
+        public var defaultValue: any EditableVariableValue {
+            switch self {
+            case .start: return MakeRangeStep.defaultValue(for: .start)
+            case .end: return MakeRangeStep.defaultValue(for: .end)
+            case .step: return MakeRangeStep.defaultValue(for: .step)
+            }
+        }
+    }
+    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
+        .init(
+            start: factory(.start) as! any NumericValue,
+            end: factory(.end) as! any NumericValue,
+            step: factory(.step) as! any NumericValue
+        )
+    }
+
+    public static func makeDefault() -> Self {
+        .init(
+            start: Properties.start.defaultValue as! any NumericValue,
+            end: Properties.end.defaultValue as! any NumericValue,
+            step: Properties.step.defaultValue as! any NumericValue
+        )
+    }
+    public func value(for property: Properties) -> any EditableVariableValue {
+        switch property {
+            case .start: return start
+            case .end: return end
+            case .step: return step
+        }
+    }
+
+    public func set(_ value: Any, for property: Properties) {
+        switch property {
+            case .start: self.start = value as! any NumericValue
+            case .end: self.end = value as! any NumericValue
+            case .step: self.step = value as! any NumericValue
+        }
+    }
+}
+
+extension VariableType {
+    public static var makeRangeStep: VariableType { .init(title: "MakeRangeStep") } // MakeRangeStep
 }
 
 // MakeableButton
@@ -1455,7 +1476,7 @@ extension VariableType {
 extension MakeableList: Copying {
     public func copy() -> MakeableList {
         return MakeableList(
-                    data: data.copy(),
+                    data: data,
                     view: view.copy()
         )
     }
@@ -1501,7 +1522,7 @@ extension MakeableList {
 }
 
 extension VariableType {
-    public static var listView: VariableType { .init(title: "List") } // MakeableList
+    public static var listView: VariableType { .init(title: "listView") } // MakeableList
 }
 
 // MakeableListRow
@@ -1514,7 +1535,7 @@ extension VariableType {
 extension MakeableMap: Copying {
     public func copy() -> MakeableMap {
         return MakeableMap(
-                    locations: locations.copy(),
+                    locations: locations,
                     zoomFollowsNewAnnotations: zoomFollowsNewAnnotations.copy()
         )
     }
@@ -1629,7 +1650,7 @@ extension VariableType {
 extension MapStep: Copying {
     public func copy() -> MapStep {
         return MapStep(
-                    value: value.copy(),
+                    value: value,
                     mapper: mapper
         )
     }
@@ -1676,20 +1697,6 @@ extension MapStep {
 
 extension VariableType {
     public static var mapStep: VariableType { .init(title: "MapStep") } // MapStep
-}
-
-// NilValue
-
-extension NilValue: Copying {
-    public func copy() -> NilValue {
-        return NilValue(
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var `nil`: VariableType { .init(title: "Nil") } // NilValue
 }
 
 // OptionalValue
@@ -1754,27 +1761,12 @@ extension VariableType {
     public static var printVarStep: VariableType { .init(title: "PrintVarStep") } // PrintVarStep
 }
 
-// ResultValue
-
-extension ResultValue: Copying {
-    public func copy() -> ResultValue {
-        return ResultValue(
-                    steps: steps
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var result: VariableType { .init(title: "Result") } // ResultValue
-}
-
 // SaveDataStep
 
 extension SaveDataStep: Copying {
     public func copy() -> SaveDataStep {
         return SaveDataStep(
-                    key: key.copy(),
+                    key: key,
                     data: data
         )
     }
@@ -1876,7 +1868,7 @@ extension TemporaryValue: Copying {
     public func copy() -> TemporaryValue {
         return TemporaryValue(
                     initial: initial,
-                    output: output.copy()
+                    output: output
         )
     }
 }
@@ -1923,23 +1915,6 @@ extension TemporaryValue {
 extension VariableType {
     public static var temporary: VariableType { .init(title: "Temporary") } // TemporaryValue
 }
-
-// TypeableValue
-
-
-
-
-// TypedValue
-
-extension TypedValue: Copying {
-    public func copy() -> TypedValue {
-        return TypedValue(
-                    value: value
-        )
-    }
-}
-
-
 
 // URLEncodeStep
 
@@ -1988,28 +1963,13 @@ extension VariableType {
     public static var uRLEncodeStep: VariableType { .init(title: "URLEncodeStep") } // URLEncodeStep
 }
 
-// Variable
-
-extension Variable: Copying {
-    public func copy() -> Variable {
-        return Variable(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var variable: VariableType { .init(title: "Variable") } // Variable
-}
-
 // VariableStep
 
 extension VariableStep: Copying {
     public func copy() -> VariableStep {
         return VariableStep(
                     varName: varName,
-                    type: type.copy()
+                    type: type
         )
     }
 }
@@ -2055,21 +2015,6 @@ extension VariableStep {
 
 extension VariableType {
     public static var variableStep: VariableType { .init(title: "VariableStep") } // VariableStep
-}
-
-// VariableTypeValue
-
-extension VariableTypeValue: Copying {
-    public func copy() -> VariableTypeValue {
-        return VariableTypeValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var type: VariableType { .init(title: "VariableType") } // VariableTypeValue
 }
 
 

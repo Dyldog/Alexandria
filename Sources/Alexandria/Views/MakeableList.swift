@@ -46,6 +46,8 @@ public final class MakeableList: MakeableView {
             return array.elements.map { _ in view.value }
         case .variable:
             return [view.value]
+        case .result:
+            return [view.value]
         }
     }
     
