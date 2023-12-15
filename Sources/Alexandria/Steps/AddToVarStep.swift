@@ -25,8 +25,8 @@ public final class AddToVarStep: Step, ObservableObject {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .value: return AnyValue(value: IntValue(value: 1))
-        case .varName: return AnyValue(value: Variable(value: StringValue(value: "VAR")))
+        case .value: return IntValue(value: 1).any
+        case .varName: return StringValue(value: "VAR").any
         }
     }
     

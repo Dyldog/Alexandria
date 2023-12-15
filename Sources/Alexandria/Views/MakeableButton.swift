@@ -80,7 +80,11 @@ public final class MakeableButton: MakeableView, Codable {
     }
     
     public func value(with variables: Variables) async throws -> VariableValue {
-        self
+        try await MakeableButton(
+            title: title.value(with: variables),
+            style: style.value(with: variables),
+            action: action.value(with: variables)
+        )
     }
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
