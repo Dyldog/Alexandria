@@ -31,9 +31,7 @@ public class Alexandria: AAProvider {
     [
     APIValueStep.self,
     AddToVarStep.self,
-    AnyMakeableView.self,
     ArrayValueStep.self,
-    ColorValue.self,
     ComparisonTypeValue.self,
     ComparisonValue.self,
     ConditionalActionValue.self,
@@ -112,9 +110,7 @@ public class Armstrong: AAProvider {
     [
     APIValueStep.self,
     AddToVarStep.self,
-    AnyMakeableView.self,
     ArrayValueStep.self,
-    ColorValue.self,
     ComparisonTypeValue.self,
     ComparisonValue.self,
     ConditionalActionValue.self,
@@ -382,21 +378,6 @@ extension VariableType {
     public static var addToVarStep: VariableType { .init(title: "AddToVarStep") } // AddToVarStep
 }
 
-// AnyMakeableView
-
-extension AnyMakeableView: Copying {
-    public func copy() -> AnyMakeableView {
-        return AnyMakeableView(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var view: VariableType { .init(title: "view") } // AnyMakeableView
-}
-
 // ArrayValueStep
 
 extension ArrayValueStep: Copying {
@@ -449,21 +430,6 @@ extension ArrayValueStep {
 
 extension VariableType {
     public static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
-}
-
-// ColorValue
-
-extension ColorValue: Copying {
-    public func copy() -> ColorValue {
-        return ColorValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var color: VariableType { .init(title: "Color") } // ColorValue
 }
 
 // ComparisonTypeValue
@@ -1318,7 +1284,7 @@ extension MakeableList: Copying {
     public func copy() -> MakeableList {
         return MakeableList(
                     data: data,
-                    view: view.copy()
+                    view: view
         )
     }
 }
