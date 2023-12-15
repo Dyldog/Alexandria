@@ -54,8 +54,8 @@ public final class MakeableList: MakeableView {
     public func valueViews(with variables: Variables) async throws -> [any MakeableView] {
         var views: [any MakeableView] = []
         
-        
-        for data in try await data.value.value(with: variables).elements {
+        let elements = try await data.value.value(with: variables).elements
+        for data in elements  {
             let variables = await variables.copy()
             
             let value = try await data.value(
@@ -64,9 +64,9 @@ public final class MakeableList: MakeableView {
             
             await variables.set(value, for: "$0")
             
-            await views.append(
-                try view.value(with: variables)
-            )
+            let valueView: any MakeableView = try await view.value(with: variables)
+            
+            views.append(valueView)
         }
         
         return views

@@ -33,7 +33,6 @@ public class Alexandria: AAProvider {
     AddToVarStep.self,
     AnyMakeableView.self,
     ArrayValueStep.self,
-    BoolValue.self,
     ColorValue.self,
     ComparisonTypeValue.self,
     ComparisonValue.self,
@@ -51,7 +50,6 @@ public class Alexandria: AAProvider {
     MakeRangeStep.self,
     MakeableButton.self,
     MakeableField.self,
-    MakeableLabel.self,
     MakeableList.self,
     MakeableMap.self,
     MakeableToggle.self,
@@ -64,7 +62,6 @@ public class Alexandria: AAProvider {
     URLEncodeStep.self,
     VariableStep.self,
     ButtonStyleValue.self,
-    FontWeightValue.self,
     TextAlignmentValue.self
     ]
     }
@@ -72,7 +69,6 @@ public class Alexandria: AAProvider {
     [
     MakeableButton.self,
     MakeableField.self,
-    MakeableLabel.self,
     MakeableList.self,
     MakeableMap.self,
     MakeableToggle.self
@@ -118,7 +114,6 @@ public class Armstrong: AAProvider {
     AddToVarStep.self,
     AnyMakeableView.self,
     ArrayValueStep.self,
-    BoolValue.self,
     ColorValue.self,
     ComparisonTypeValue.self,
     ComparisonValue.self,
@@ -136,7 +131,6 @@ public class Armstrong: AAProvider {
     MakeRangeStep.self,
     MakeableButton.self,
     MakeableField.self,
-    MakeableLabel.self,
     MakeableList.self,
     MakeableMap.self,
     MakeableToggle.self,
@@ -149,7 +143,6 @@ public class Armstrong: AAProvider {
     URLEncodeStep.self,
     VariableStep.self,
     ButtonStyleValue.self,
-    FontWeightValue.self,
     TextAlignmentValue.self
     ]
     }
@@ -157,7 +150,6 @@ public class Armstrong: AAProvider {
     [
     MakeableButton.self,
     MakeableField.self,
-    MakeableLabel.self,
     MakeableList.self,
     MakeableMap.self,
     MakeableToggle.self
@@ -177,11 +169,6 @@ extension MakeableButton {
 extension MakeableField {
     public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableFieldView(isRunning: isRunning, showEditControls: showEditControls, field: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
-    }
-}
-extension MakeableLabel {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, label: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableList {
@@ -243,48 +230,6 @@ extension ButtonStyle: Copying {
 
 extension VariableType {
     public static var buttonStyle: VariableType { .init(title: "ButtonStyle") } // ButtonStyle
-}
-
-public final class FontWeightValue: PrimitiveEditableVariableValue, Codable, Copying {
-
-    public static var type: VariableType { .fontWeight }
-    public static var defaultValue: Font.Weight { .defaultValue }
-    public var value: Font.Weight
-    public init(value: Font.Weight) {
-        self.value = value
-    }
-    public static func makeDefault() -> FontWeightValue {
-        .init(value: defaultValue)
-    }
-    public func add(_ other: VariableValue) throws -> VariableValue {
-        throw VariableValueError.variableCannotPerformOperation(Self.type, "add")
-    }
-    public var protoString: String { "\(value.title)" }
-    public var valueString: String { protoString }
-    public func value(with variables: Variables) async throws -> VariableValue {
-        self
-    }
-    public func copy() -> FontWeightValue {
-        .init(
-            value: value
-        )
-    }
-}
-
-extension FontWeightValue: CodeRepresentable {
-    public var codeRepresentation: String {
-        value.codeRepresentation
-    }
-}
-
-extension Font.Weight: Copying {
-    public func copy() -> Font.Weight {
-        return self
-    }
-}
-
-extension VariableType {
-    public static var fontWeight: VariableType { .init(title: "FontWeight") } // Font.Weight
 }
 
 public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, Copying {
@@ -504,21 +449,6 @@ extension ArrayValueStep {
 
 extension VariableType {
     public static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
-}
-
-// BoolValue
-
-extension BoolValue: Copying {
-    public func copy() -> BoolValue {
-        return BoolValue(
-                    value: value
-        )
-    }
-}
-
-
-extension VariableType {
-    public static var boolean: VariableType { .init(title: "boolean") } // BoolValue
 }
 
 // ColorValue
@@ -1244,7 +1174,7 @@ extension VariableType {
 extension MakeableButton: Copying {
     public func copy() -> MakeableButton {
         return MakeableButton(
-                    title: title.copy(),
+                    title: title,
                     style: style,
                     action: action
         )
@@ -1310,7 +1240,7 @@ extension MakeableField: Copying {
                     onTextUpdate: onTextUpdate,
                     padding: padding,
                     alignment: alignment,
-                    isMultiline: isMultiline.copy()
+                    isMultiline: isMultiline
         )
     }
 }
@@ -1382,95 +1312,6 @@ extension VariableType {
     public static var field: VariableType { .init(title: "Field") } // MakeableField
 }
 
-// MakeableLabel
-
-extension MakeableLabel: Copying {
-    public func copy() -> MakeableLabel {
-        return MakeableLabel(
-                    text: text,
-                    fontSize: fontSize,
-                    fontWeight: fontWeight,
-                    italic: italic.copy(),
-                    base: base,
-                    textColor: textColor.copy(),
-                    isMultiline: isMultiline.copy()
-        )
-    }
-}
-
-extension MakeableLabel {
-     public enum Properties: String, ViewProperty {
-        case text
-        case fontSize
-        case fontWeight
-        case italic
-        case base
-        case textColor
-        case isMultiline
-        public var defaultValue: any EditableVariableValue {
-            switch self {
-            case .text: return MakeableLabel.defaultValue(for: .text)
-            case .fontSize: return MakeableLabel.defaultValue(for: .fontSize)
-            case .fontWeight: return MakeableLabel.defaultValue(for: .fontWeight)
-            case .italic: return MakeableLabel.defaultValue(for: .italic)
-            case .base: return MakeableLabel.defaultValue(for: .base)
-            case .textColor: return MakeableLabel.defaultValue(for: .textColor)
-            case .isMultiline: return MakeableLabel.defaultValue(for: .isMultiline)
-            }
-        }
-    }
-    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
-        .init(
-            text: factory(.text) as! AnyValue,
-            fontSize: factory(.fontSize) as! IntValue,
-            fontWeight: factory(.fontWeight) as! FontWeightValue,
-            italic: factory(.italic) as! BoolValue,
-            base: factory(.base) as! MakeableBase,
-            textColor: factory(.textColor) as! ColorValue,
-            isMultiline: factory(.isMultiline) as! BoolValue
-        )
-    }
-
-    public static func makeDefault() -> Self {
-        .init(
-            text: Properties.text.defaultValue as! AnyValue,
-            fontSize: Properties.fontSize.defaultValue as! IntValue,
-            fontWeight: Properties.fontWeight.defaultValue as! FontWeightValue,
-            italic: Properties.italic.defaultValue as! BoolValue,
-            base: Properties.base.defaultValue as! MakeableBase,
-            textColor: Properties.textColor.defaultValue as! ColorValue,
-            isMultiline: Properties.isMultiline.defaultValue as! BoolValue
-        )
-    }
-    public func value(for property: Properties) -> any EditableVariableValue {
-        switch property {
-            case .text: return text
-            case .fontSize: return fontSize
-            case .fontWeight: return fontWeight
-            case .italic: return italic
-            case .base: return base
-            case .textColor: return textColor
-            case .isMultiline: return isMultiline
-        }
-    }
-
-    public func set(_ value: Any, for property: Properties) {
-        switch property {
-            case .text: self.text = value as! AnyValue
-            case .fontSize: self.fontSize = value as! IntValue
-            case .fontWeight: self.fontWeight = value as! FontWeightValue
-            case .italic: self.italic = value as! BoolValue
-            case .base: self.base = value as! MakeableBase
-            case .textColor: self.textColor = value as! ColorValue
-            case .isMultiline: self.isMultiline = value as! BoolValue
-        }
-    }
-}
-
-extension VariableType {
-    public static var label: VariableType { .init(title: "Label") } // MakeableLabel
-}
-
 // MakeableList
 
 extension MakeableList: Copying {
@@ -1536,7 +1377,7 @@ extension MakeableMap: Copying {
     public func copy() -> MakeableMap {
         return MakeableMap(
                     locations: locations,
-                    zoomFollowsNewAnnotations: zoomFollowsNewAnnotations.copy()
+                    zoomFollowsNewAnnotations: zoomFollowsNewAnnotations
         )
     }
 }

@@ -115,7 +115,18 @@ public final class MakeableField: MakeableView, Codable {
     }
     
     public func value(with variables: Variables) async throws -> VariableValue {
-        self
+//        self
+        try await MakeableField(
+            text: TemporaryValue(
+                initial: (text.value(with: variables) as (any EditableVariableValue)).any,
+                output: text.output
+            ),
+            fontSize: fontSize.value(with: variables),
+            onTextUpdate: onTextUpdate.value(with: variables),
+            padding: padding.value(with: variables),
+            alignment: alignment.value(with: variables),
+            isMultiline: isMultiline.value(with: variables)
+        )
     }
     
     public func insertValues(into variables: Variables) async throws {

@@ -66,7 +66,7 @@ public final class MakeableButton: MakeableView, Codable {
     public var style: ButtonStyleValue
     public var action: StepArray
     
-    public var protoString: String { title.protoString }
+    public var protoString: String { "BUTTON(\(title.protoString))" }
     public var valueString: String { title.valueString }
     
     public init(title: MakeableLabel, style: ButtonStyleValue, action: StepArray) {
