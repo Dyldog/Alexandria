@@ -324,6 +324,23 @@ extension VariableType {
     public static var aPIStep: VariableType { .init(title: "APIStep") } // APIValueStep
 }
 
+extension APIValueStep {
+    enum CodingKeys: String, CodingKey {
+        case url
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            url: (try? valueContainer.decode(AnyValue.self, forKey: .url)) ?? Properties.url.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+    }
+}
+
 // AddToVarStep
 
 extension AddToVarStep: Copying {
@@ -376,6 +393,26 @@ extension AddToVarStep {
 
 extension VariableType {
     public static var addToVarStep: VariableType { .init(title: "AddToVarStep") } // AddToVarStep
+}
+
+extension AddToVarStep {
+    enum CodingKeys: String, CodingKey {
+        case varName
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            varName: (try? valueContainer.decode(AnyValue.self, forKey: .varName)) ?? Properties.varName.defaultValue as! AnyValue,
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Properties.value.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(varName, forKey: .varName)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // ArrayValueStep
@@ -432,6 +469,26 @@ extension VariableType {
     public static var arrayStep: VariableType { .init(title: "ArrayStep") } // ArrayValueStep
 }
 
+extension ArrayValueStep {
+    enum CodingKeys: String, CodingKey {
+        case array
+        case index
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            array: (try? valueContainer.decode(AnyValue.self, forKey: .array)) ?? Properties.array.defaultValue as! AnyValue,
+            index: (try? valueContainer.decode(AnyValue.self, forKey: .index)) ?? Properties.index.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(array, forKey: .array)
+        try container.encode(index, forKey: .index)
+    }
+}
+
 // ComparisonTypeValue
 
 extension ComparisonTypeValue: Copying {
@@ -445,6 +502,23 @@ extension ComparisonTypeValue: Copying {
 
 extension VariableType {
     public static var comparisonType: VariableType { .init(title: "ComparisonType") } // ComparisonTypeValue
+}
+
+extension ComparisonTypeValue {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(ComparisonType.self, forKey: .value)) ?? Self.makeDefault().value
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // ComparisonValue
@@ -508,6 +582,29 @@ extension VariableType {
     public static var comparison: VariableType { .init(title: "Comparison") } // ComparisonValue
 }
 
+extension ComparisonValue {
+    enum CodingKeys: String, CodingKey {
+        case lhs
+        case rhs
+        case comparison
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            lhs: (try? valueContainer.decode(AnyValue.self, forKey: .lhs)) ?? Properties.lhs.defaultValue as! AnyValue,
+            rhs: (try? valueContainer.decode(AnyValue.self, forKey: .rhs)) ?? Properties.rhs.defaultValue as! AnyValue,
+            comparison: (try? valueContainer.decode(ComparisonTypeValue.self, forKey: .comparison)) ?? Properties.comparison.defaultValue as! ComparisonTypeValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(lhs, forKey: .lhs)
+        try container.encode(rhs, forKey: .rhs)
+        try container.encode(comparison, forKey: .comparison)
+    }
+}
+
 // ConditionalActionValue
 
 extension ConditionalActionValue: Copying {
@@ -562,6 +659,26 @@ extension VariableType {
     public static var conditionalAction: VariableType { .init(title: "ConditionalAction") } // ConditionalActionValue
 }
 
+extension ConditionalActionValue {
+    enum CodingKeys: String, CodingKey {
+        case ifCondition
+        case ifSteps
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            ifCondition: (try? valueContainer.decode(ComparisonValue.self, forKey: .ifCondition)) ?? Properties.ifCondition.defaultValue as! ComparisonValue,
+            ifSteps: (try? valueContainer.decode(StepArray.self, forKey: .ifSteps)) ?? Properties.ifSteps.defaultValue as! StepArray
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ifCondition, forKey: .ifCondition)
+        try container.encode(ifSteps, forKey: .ifSteps)
+    }
+}
+
 // DecodeArrayStep
 
 extension DecodeArrayStep: Copying {
@@ -607,6 +724,23 @@ extension DecodeArrayStep {
 
 extension VariableType {
     public static var decodeArrayStep: VariableType { .init(title: "DecodeArrayStep") } // DecodeArrayStep
+}
+
+extension DecodeArrayStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(TypedValue<IntValue>.self, forKey: .value)) ?? Properties.value.defaultValue as! TypedValue<IntValue>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // DecodeDictionaryStep
@@ -656,6 +790,23 @@ extension VariableType {
     public static var decodeDictionaryStep: VariableType { .init(title: "DecodeDictionaryStep") } // DecodeDictionaryStep
 }
 
+extension DecodeDictionaryStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Properties.value.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
+}
+
 // DictionaryKeysStep
 
 extension DictionaryKeysStep: Copying {
@@ -701,6 +852,23 @@ extension DictionaryKeysStep {
 
 extension VariableType {
     public static var dictionaryKeysStep: VariableType { .init(title: "DictionaryKeysStep") } // DictionaryKeysStep
+}
+
+extension DictionaryKeysStep {
+    enum CodingKeys: String, CodingKey {
+        case dictionary
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            dictionary: (try? valueContainer.decode(TypedValue<DictionaryValue>.self, forKey: .dictionary)) ?? Properties.dictionary.defaultValue as! TypedValue<DictionaryValue>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(dictionary, forKey: .dictionary)
+    }
 }
 
 // DictionaryValueForKeyStep
@@ -757,6 +925,26 @@ extension VariableType {
     public static var dictionaryForKeyStep: VariableType { .init(title: "DictionaryForKeyStep") } // DictionaryValueForKeyStep
 }
 
+extension DictionaryValueForKeyStep {
+    enum CodingKeys: String, CodingKey {
+        case dictionary
+        case key
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            dictionary: (try? valueContainer.decode(TypedValue<DictionaryValue>.self, forKey: .dictionary)) ?? Properties.dictionary.defaultValue as! TypedValue<DictionaryValue>,
+            key: (try? valueContainer.decode(AnyValue.self, forKey: .key)) ?? Properties.key.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(dictionary, forKey: .dictionary)
+        try container.encode(key, forKey: .key)
+    }
+}
+
 // ForEachStep
 
 extension ForEachStep: Copying {
@@ -811,6 +999,26 @@ extension VariableType {
     public static var forEachStep: VariableType { .init(title: "ForEachStep") } // ForEachStep
 }
 
+extension ForEachStep {
+    enum CodingKeys: String, CodingKey {
+        case values
+        case loop
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            values: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .values)) ?? Properties.values.defaultValue as! TypedValue<ArrayValue>,
+            loop: (try? valueContainer.decode(StepArray.self, forKey: .loop)) ?? Properties.loop.defaultValue as! StepArray
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(values, forKey: .values)
+        try container.encode(loop, forKey: .loop)
+    }
+}
+
 // FunctionStep
 
 extension FunctionStep: Copying {
@@ -856,6 +1064,23 @@ extension FunctionStep {
 
 extension VariableType {
     public static var functionStep: VariableType { .init(title: "FunctionStep") } // FunctionStep
+}
+
+extension FunctionStep {
+    enum CodingKeys: String, CodingKey {
+        case functionName
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            functionName: (try? valueContainer.decode(AnyValue.self, forKey: .functionName)) ?? Properties.functionName.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(functionName, forKey: .functionName)
+    }
 }
 
 // GetNumberStep
@@ -912,6 +1137,26 @@ extension VariableType {
     public static var getNumberStep: VariableType { .init(title: "GetNumberStep") } // GetNumberStep
 }
 
+extension GetNumberStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+        case numberType
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Properties.value.defaultValue as! AnyValue,
+            numberType: (try? valueContainer.decode(NumericTypeValue.self, forKey: .numberType)) ?? Properties.numberType.defaultValue as! NumericTypeValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+        try container.encode(numberType, forKey: .numberType)
+    }
+}
+
 // GetSavedDataStep
 
 extension GetSavedDataStep: Copying {
@@ -957,6 +1202,23 @@ extension GetSavedDataStep {
 
 extension VariableType {
     public static var getSavedDataStep: VariableType { .init(title: "GetSavedDataStep") } // GetSavedDataStep
+}
+
+extension GetSavedDataStep {
+    enum CodingKeys: String, CodingKey {
+        case key
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            key: (try? valueContainer.decode(TypedValue<StringValue>.self, forKey: .key)) ?? Properties.key.defaultValue as! TypedValue<StringValue>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+    }
 }
 
 // IfStep
@@ -1011,6 +1273,26 @@ extension IfStep {
 
 extension VariableType {
     public static var ifStep: VariableType { .init(title: "IfStep") } // IfStep
+}
+
+extension IfStep {
+    enum CodingKeys: String, CodingKey {
+        case ifAction
+        case elseAction
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            ifAction: (try? valueContainer.decode(ConditionalActionValue.self, forKey: .ifAction)) ?? Properties.ifAction.defaultValue as! ConditionalActionValue,
+            elseAction: (try? valueContainer.decode(StepArray.self, forKey: .elseAction)) ?? Properties.elseAction.defaultValue as! StepArray
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ifAction, forKey: .ifAction)
+        try container.encode(elseAction, forKey: .elseAction)
+    }
 }
 
 // LocationValue
@@ -1074,6 +1356,29 @@ extension VariableType {
     public static var location: VariableType { .init(title: "Location") } // LocationValue
 }
 
+extension LocationValue {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case latitude
+        case longitude
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            name: (try? valueContainer.decode(TypedValue<StringValue>.self, forKey: .name)) ?? Properties.name.defaultValue as! TypedValue<StringValue>,
+            latitude: (try? valueContainer.decode(TypedValue<FloatValue>.self, forKey: .latitude)) ?? Properties.latitude.defaultValue as! TypedValue<FloatValue>,
+            longitude: (try? valueContainer.decode(TypedValue<FloatValue>.self, forKey: .longitude)) ?? Properties.longitude.defaultValue as! TypedValue<FloatValue>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(latitude, forKey: .latitude)
+        try container.encode(longitude, forKey: .longitude)
+    }
+}
+
 // MakeRangeStep
 
 extension MakeRangeStep: Copying {
@@ -1135,6 +1440,7 @@ extension VariableType {
     public static var makeRangeStep: VariableType { .init(title: "MakeRangeStep") } // MakeRangeStep
 }
 
+
 // MakeableButton
 
 extension MakeableButton: Copying {
@@ -1194,6 +1500,29 @@ extension MakeableButton {
 
 extension VariableType {
     public static var button: VariableType { .init(title: "Button") } // MakeableButton
+}
+
+extension MakeableButton {
+    enum CodingKeys: String, CodingKey {
+        case title
+        case style
+        case action
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            title: (try? valueContainer.decode(MakeableLabel.self, forKey: .title)) ?? Properties.title.defaultValue as! MakeableLabel,
+            style: (try? valueContainer.decode(ButtonStyleValue.self, forKey: .style)) ?? Properties.style.defaultValue as! ButtonStyleValue,
+            action: (try? valueContainer.decode(StepArray.self, forKey: .action)) ?? Properties.action.defaultValue as! StepArray
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(title, forKey: .title)
+        try container.encode(style, forKey: .style)
+        try container.encode(action, forKey: .action)
+    }
 }
 
 // MakeableField
@@ -1278,6 +1607,38 @@ extension VariableType {
     public static var field: VariableType { .init(title: "Field") } // MakeableField
 }
 
+extension MakeableField {
+    enum CodingKeys: String, CodingKey {
+        case text
+        case fontSize
+        case onTextUpdate
+        case padding
+        case alignment
+        case isMultiline
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            text: (try? valueContainer.decode(TemporaryValue.self, forKey: .text)) ?? Properties.text.defaultValue as! TemporaryValue,
+            fontSize: (try? valueContainer.decode(IntValue.self, forKey: .fontSize)) ?? Properties.fontSize.defaultValue as! IntValue,
+            onTextUpdate: (try? valueContainer.decode(StepArray.self, forKey: .onTextUpdate)) ?? Properties.onTextUpdate.defaultValue as! StepArray,
+            padding: (try? valueContainer.decode(IntValue.self, forKey: .padding)) ?? Properties.padding.defaultValue as! IntValue,
+            alignment: (try? valueContainer.decode(TextAlignmentValue.self, forKey: .alignment)) ?? Properties.alignment.defaultValue as! TextAlignmentValue,
+            isMultiline: (try? valueContainer.decode(BoolValue.self, forKey: .isMultiline)) ?? Properties.isMultiline.defaultValue as! BoolValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(text, forKey: .text)
+        try container.encode(fontSize, forKey: .fontSize)
+        try container.encode(onTextUpdate, forKey: .onTextUpdate)
+        try container.encode(padding, forKey: .padding)
+        try container.encode(alignment, forKey: .alignment)
+        try container.encode(isMultiline, forKey: .isMultiline)
+    }
+}
+
 // MakeableList
 
 extension MakeableList: Copying {
@@ -1332,7 +1693,28 @@ extension VariableType {
     public static var listView: VariableType { .init(title: "listView") } // MakeableList
 }
 
+extension MakeableList {
+    enum CodingKeys: String, CodingKey {
+        case data
+        case view
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            data: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .data)) ?? Properties.data.defaultValue as! TypedValue<ArrayValue>,
+            view: (try? valueContainer.decode(AnyMakeableView.self, forKey: .view)) ?? Properties.view.defaultValue as! AnyMakeableView
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(data, forKey: .data)
+        try container.encode(view, forKey: .view)
+    }
+}
+
 // MakeableListRow
+
 
 
 
@@ -1389,6 +1771,26 @@ extension MakeableMap {
 
 extension VariableType {
     public static var map: VariableType { .init(title: "Map") } // MakeableMap
+}
+
+extension MakeableMap {
+    enum CodingKeys: String, CodingKey {
+        case locations
+        case zoomFollowsNewAnnotations
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            locations: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .locations)) ?? Properties.locations.defaultValue as! TypedValue<ArrayValue>,
+            zoomFollowsNewAnnotations: (try? valueContainer.decode(BoolValue.self, forKey: .zoomFollowsNewAnnotations)) ?? Properties.zoomFollowsNewAnnotations.defaultValue as! BoolValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(locations, forKey: .locations)
+        try container.encode(zoomFollowsNewAnnotations, forKey: .zoomFollowsNewAnnotations)
+    }
 }
 
 // MakeableToggle
@@ -1452,6 +1854,29 @@ extension VariableType {
     public static var toggle: VariableType { .init(title: "Toggle") } // MakeableToggle
 }
 
+extension MakeableToggle {
+    enum CodingKeys: String, CodingKey {
+        case isOn
+        case onToggleUpdate
+        case padding
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            isOn: (try? valueContainer.decode(TemporaryValue.self, forKey: .isOn)) ?? Properties.isOn.defaultValue as! TemporaryValue,
+            onToggleUpdate: (try? valueContainer.decode(StepArray.self, forKey: .onToggleUpdate)) ?? Properties.onToggleUpdate.defaultValue as! StepArray,
+            padding: (try? valueContainer.decode(IntValue.self, forKey: .padding)) ?? Properties.padding.defaultValue as! IntValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(isOn, forKey: .isOn)
+        try container.encode(onToggleUpdate, forKey: .onToggleUpdate)
+        try container.encode(padding, forKey: .padding)
+    }
+}
+
 // MapStep
 
 extension MapStep: Copying {
@@ -1506,6 +1931,26 @@ extension VariableType {
     public static var mapStep: VariableType { .init(title: "MapStep") } // MapStep
 }
 
+extension MapStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+        case mapper
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .value)) ?? Properties.value.defaultValue as! TypedValue<ArrayValue>,
+            mapper: (try? valueContainer.decode(StepArray.self, forKey: .mapper)) ?? Properties.mapper.defaultValue as! StepArray
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+        try container.encode(mapper, forKey: .mapper)
+    }
+}
+
 // OptionalValue
 
 extension OptionalValue: Copying {
@@ -1519,6 +1964,23 @@ extension OptionalValue: Copying {
 
 extension VariableType {
     public static var optional: VariableType { .init(title: "Optional") } // OptionalValue
+}
+
+extension OptionalValue {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Self.makeDefault().value
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // PrintVarStep
@@ -1566,6 +2028,23 @@ extension PrintVarStep {
 
 extension VariableType {
     public static var printVarStep: VariableType { .init(title: "PrintVarStep") } // PrintVarStep
+}
+
+extension PrintVarStep {
+    enum CodingKeys: String, CodingKey {
+        case varName
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            varName: (try? valueContainer.decode(AnyValue.self, forKey: .varName)) ?? Properties.varName.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(varName, forKey: .varName)
+    }
 }
 
 // SaveDataStep
@@ -1622,6 +2101,26 @@ extension VariableType {
     public static var saveDataStep: VariableType { .init(title: "SaveDataStep") } // SaveDataStep
 }
 
+extension SaveDataStep {
+    enum CodingKeys: String, CodingKey {
+        case key
+        case data
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            key: (try? valueContainer.decode(TypedValue<StringValue>.self, forKey: .key)) ?? Properties.key.defaultValue as! TypedValue<StringValue>,
+            data: (try? valueContainer.decode(AnyValue.self, forKey: .data)) ?? Properties.data.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        try container.encode(data, forKey: .data)
+    }
+}
+
 // StaticValueStep
 
 extension StaticValueStep: Copying {
@@ -1667,6 +2166,23 @@ extension StaticValueStep {
 
 extension VariableType {
     public static var staticStep: VariableType { .init(title: "StaticStep") } // StaticValueStep
+}
+
+extension StaticValueStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Properties.value.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // TemporaryValue
@@ -1723,6 +2239,7 @@ extension VariableType {
     public static var temporary: VariableType { .init(title: "Temporary") } // TemporaryValue
 }
 
+
 // URLEncodeStep
 
 extension URLEncodeStep: Copying {
@@ -1768,6 +2285,23 @@ extension URLEncodeStep {
 
 extension VariableType {
     public static var uRLEncodeStep: VariableType { .init(title: "URLEncodeStep") } // URLEncodeStep
+}
+
+extension URLEncodeStep {
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            value: (try? valueContainer.decode(AnyValue.self, forKey: .value)) ?? Properties.value.defaultValue as! AnyValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 // VariableStep
@@ -1823,6 +2357,28 @@ extension VariableStep {
 extension VariableType {
     public static var variableStep: VariableType { .init(title: "VariableStep") } // VariableStep
 }
+
+extension VariableStep {
+    enum CodingKeys: String, CodingKey {
+        case varName
+        case type
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            varName: (try? valueContainer.decode(AnyValue.self, forKey: .varName)) ?? Properties.varName.defaultValue as! AnyValue,
+            type: (try? valueContainer.decode(VariableTypeValue.self, forKey: .type)) ?? Properties.type.defaultValue as! VariableTypeValue
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(varName, forKey: .varName)
+        try container.encode(type, forKey: .type)
+    }
+}
+
+
 
 
 

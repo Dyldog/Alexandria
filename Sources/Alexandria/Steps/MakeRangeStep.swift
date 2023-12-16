@@ -8,6 +8,7 @@
 import Foundation
 import Armstrong
 
+// sourcery: skipCodable
 public final class MakeRangeStep: ValueStep {
     
     public static var type: VariableType { .makeRangeStep }

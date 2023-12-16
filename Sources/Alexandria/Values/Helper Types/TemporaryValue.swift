@@ -8,6 +8,7 @@
 import SwiftUI
 import Armstrong
 
+// sourcery: skipCodable
 public final class TemporaryValue: CompositeEditableVariableValue {
     public static var type: VariableType { .temporary }
     
