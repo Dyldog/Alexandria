@@ -23,7 +23,7 @@ public final class TemporaryValue: CompositeEditableVariableValue {
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
         case .initial: return AnyValue(value: StringValue(value: "TEXT"))
-        case .output: return Variable(value: StringValue(value: "FIELDTEXT"))
+        case .output: return Variable(value: StringValue(value: "FIELDTEXT").any)
         }
     }
     

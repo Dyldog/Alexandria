@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Armstrong
+import DylKit
 
 public final class MakeableToggle: MakeableView {
     
@@ -29,7 +30,7 @@ public final class MakeableToggle: MakeableView {
         switch property {
         case .isOn: return TemporaryValue(
             initial: .init(value: BoolValue(value: false)),
-            output: .init(value: StringValue(value: "SWITCHON")))
+            output: .init(value: StringValue(value: "SWITCHON").any))
         case .onToggleUpdate: return StepArray(value: [])
         case .padding: return IntValue(value: 5)
         }
@@ -57,7 +58,7 @@ struct MakeableToggleView: View {
     let showEditControls: Bool
     let toggle: MakeableToggle
     let onContentUpdate: (MakeableToggle) -> Void
-    let onRuntimeUpdate: () -> Void
+    let onRuntimeUpdate: (@escaping Block) -> Void
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
@@ -99,7 +100,7 @@ struct MakeableToggleView: View {
                 fatalError(error.localizedDescription)
             }
             
-            onRuntimeUpdate()
+            onRuntimeUpdate { }
         }
     }
 }

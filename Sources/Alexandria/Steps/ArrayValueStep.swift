@@ -26,7 +26,7 @@ public final class ArrayValueStep: ValueStep {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .array: return AnyValue(value: Variable(value: StringValue(value: "$0")))
+        case .array: return AnyValue(value: Variable(value: StringValue(value: "$0").any))
         case .index: return AnyValue(value: IntValue(value: 0))
         }
     }

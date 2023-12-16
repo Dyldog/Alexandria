@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Armstrong
+import DylKit
 
 // sourcery: skipCopying, skipVariableType, skipCodable
 public typealias MakeableListRow = MakeableView & Codable
@@ -79,14 +80,14 @@ public struct MakeableListView: View {
     let listView: MakeableList
     
     let onContentUpdate: (MakeableList) -> Void
-    let onRuntimeUpdate: () -> Void
+    let onRuntimeUpdate: (@escaping Block) -> Void
     
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
     @State var views: [any MakeableView] = []
     
-    public init(isRunning: Bool, showEditControls: Bool, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) {
+    public init(isRunning: Bool, showEditControls: Bool, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.isRunning = isRunning
         self.showEditControls = showEditControls
         self.listView = listView
@@ -106,8 +107,10 @@ public struct MakeableListView: View {
                     onContentUpdate: {
                         views[index] = $0
                     },
-                    onRuntimeUpdate: {
-                        //
+                    onRuntimeUpdate: { completion in
+                        onRuntimeUpdate {
+                            completion()
+                        }
                     },
                     error: $error
                 )

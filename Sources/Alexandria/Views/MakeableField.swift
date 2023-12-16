@@ -7,13 +7,14 @@
 
 import SwiftUI
 import Armstrong
+import DylKit
 
 struct MakeableFieldView: View {
     let isRunning: Bool
     let showEditControls: Bool
     let field: MakeableField
     let onContentUpdate: (MakeableField) -> Void
-    let onRuntimeUpdate: () -> Void
+    let onRuntimeUpdate: (@escaping Block) -> Void
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     @State var text: String = "LOADING"
@@ -44,14 +45,18 @@ struct MakeableFieldView: View {
                     .any
             }
         }.task(id: variables.hashValue) {
-            do {
-                let value = try await field.text.value(with: variables).valueString
-                self.text = value
-            } catch let error as VariableValueError {
-                self.error = error
-            } catch {
-                fatalError(error.localizedDescription)
-            }
+            await updateValues()
+        }
+    }
+    
+    private func updateValues() async  {
+        do {
+            let value = try await field.text.value(with: variables).valueString
+            self.text = value
+        } catch let error as VariableValueError {
+            self.error = error
+        } catch {
+            fatalError(error.localizedDescription)
         }
     }
     
@@ -72,7 +77,9 @@ struct MakeableFieldView: View {
                 print(error.localizedDescription)
             }
             
-            onRuntimeUpdate()
+            onRuntimeUpdate {
+                Task { @MainActor in await updateValues() }
+            }
         }
     }
 }

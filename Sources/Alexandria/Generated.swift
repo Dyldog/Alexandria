@@ -154,31 +154,32 @@ public class Armstrong: AAProvider {
 }
 
 import SwiftUI
+import DylKit
 
 
 
 extension MakeableButton {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
+    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableButtonView(isRunning: isRunning, showEditControls: showEditControls, button: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableField {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
+    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableFieldView(isRunning: isRunning, showEditControls: showEditControls, field: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableList {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
+    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableListView(isRunning: isRunning, showEditControls: showEditControls, listView: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableMap {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
+    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableMapView(isRunning: isRunning, showEditControls: showEditControls, map: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableToggle {
-    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) -> AnyView {
+    public func make(isRunning: Bool, showEditControls: Bool, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
         MakeableToggleView(isRunning: isRunning, showEditControls: showEditControls, toggle: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
@@ -877,7 +878,8 @@ extension DictionaryValueForKeyStep: Copying {
     public func copy() -> DictionaryValueForKeyStep {
         return DictionaryValueForKeyStep(
                     dictionary: dictionary,
-                    key: key
+                    key: key,
+                    errorIfNotFound: errorIfNotFound
         )
     }
 }
@@ -886,30 +888,35 @@ extension DictionaryValueForKeyStep {
      public enum Properties: String, ViewProperty {
         case dictionary
         case key
+        case errorIfNotFound
         public var defaultValue: any EditableVariableValue {
             switch self {
             case .dictionary: return DictionaryValueForKeyStep.defaultValue(for: .dictionary)
             case .key: return DictionaryValueForKeyStep.defaultValue(for: .key)
+            case .errorIfNotFound: return DictionaryValueForKeyStep.defaultValue(for: .errorIfNotFound)
             }
         }
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
             dictionary: factory(.dictionary) as! TypedValue<DictionaryValue>,
-            key: factory(.key) as! AnyValue
+            key: factory(.key) as! AnyValue,
+            errorIfNotFound: factory(.errorIfNotFound) as! BoolValue
         )
     }
 
     public static func makeDefault() -> Self {
         .init(
             dictionary: Properties.dictionary.defaultValue as! TypedValue<DictionaryValue>,
-            key: Properties.key.defaultValue as! AnyValue
+            key: Properties.key.defaultValue as! AnyValue,
+            errorIfNotFound: Properties.errorIfNotFound.defaultValue as! BoolValue
         )
     }
     public func value(for property: Properties) -> any EditableVariableValue {
         switch property {
             case .dictionary: return dictionary
             case .key: return key
+            case .errorIfNotFound: return errorIfNotFound
         }
     }
 
@@ -917,6 +924,7 @@ extension DictionaryValueForKeyStep {
         switch property {
             case .dictionary: self.dictionary = value as! TypedValue<DictionaryValue>
             case .key: self.key = value as! AnyValue
+            case .errorIfNotFound: self.errorIfNotFound = value as! BoolValue
         }
     }
 }
@@ -929,19 +937,22 @@ extension DictionaryValueForKeyStep {
     enum CodingKeys: String, CodingKey {
         case dictionary
         case key
+        case errorIfNotFound
     }
 
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
             dictionary: (try? valueContainer.decode(TypedValue<DictionaryValue>.self, forKey: .dictionary)) ?? Properties.dictionary.defaultValue as! TypedValue<DictionaryValue>,
-            key: (try? valueContainer.decode(AnyValue.self, forKey: .key)) ?? Properties.key.defaultValue as! AnyValue
+            key: (try? valueContainer.decode(AnyValue.self, forKey: .key)) ?? Properties.key.defaultValue as! AnyValue,
+            errorIfNotFound: (try? valueContainer.decode(BoolValue.self, forKey: .errorIfNotFound)) ?? Properties.errorIfNotFound.defaultValue as! BoolValue
         )
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(dictionary, forKey: .dictionary)
         try container.encode(key, forKey: .key)
+        try container.encode(errorIfNotFound, forKey: .errorIfNotFound)
     }
 }
 

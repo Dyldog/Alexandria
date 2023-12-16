@@ -7,17 +7,18 @@
 
 import SwiftUI
 import Armstrong
+import DylKit
 
 struct MakeableButtonView: View {
     let isRunning: Bool
     let showEditControls: Bool
     let button: MakeableButton
     let onContentUpdate: (MakeableButton) -> Void
-    let onRuntimeUpdate: () -> Void
+    let onRuntimeUpdate: (@escaping Block) -> Void
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
-    init(isRunning: Bool, showEditControls: Bool, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping () -> Void, error: Binding<VariableValueError?>) {
+    init(isRunning: Bool, showEditControls: Bool, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.isRunning = isRunning
         self.showEditControls = showEditControls
         self.button = button
@@ -32,8 +33,10 @@ struct MakeableButtonView: View {
             MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, label: button.title, onContentUpdate: {
                 button.title = $0
                 onContentUpdate(button)
-            }, onRuntimeUpdate: {
-                onRuntimeUpdate()
+            }, onRuntimeUpdate: { completion in
+                onRuntimeUpdate {
+                    completion()
+                }
             }, error: $error)
         })
         .buttonStyle(.bordered)
@@ -48,7 +51,7 @@ struct MakeableButtonView: View {
                         try await action.run(with: variables)
                     }
                     
-                    onRuntimeUpdate()
+                    onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
                 } catch {

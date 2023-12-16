@@ -28,7 +28,7 @@ public final class PrintVarStep: Step, Codable {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .varName: return AnyValue(value: Variable(value: StringValue(value: "$0")))
+        case .varName: return AnyValue(value: Variable(value: StringValue(value: "$0").any))
         }
     }
 }

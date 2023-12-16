@@ -12,12 +12,19 @@ public final class  DictionaryValueForKeyStep: ValueStep {
     
     public static var type: VariableType { .dictionaryForKeyStep }
     public static var title: String { "Get a value from a dictionary" }
+    
     public var dictionary: TypedValue<DictionaryValue>
     public var key: AnyValue
+    public var errorIfNotFound: BoolValue
     
-    public init(dictionary: TypedValue<DictionaryValue>, key: AnyValue) {
+    public init(
+        dictionary: TypedValue<DictionaryValue>,
+        key: AnyValue,
+        errorIfNotFound: BoolValue = .false
+    ) {
         self.dictionary = dictionary
         self.key = key
+        self.errorIfNotFound = errorIfNotFound
     }
     
     public var protoString: String { "{ \(dictionary.protoString)[\(key.protoString)] }" }
@@ -27,6 +34,7 @@ public final class  DictionaryValueForKeyStep: ValueStep {
         switch property {
         case .dictionary: return TypedValue(value: .constant(DictionaryValue.makeDefault()))
         case .key: return StringValue(value: "KEY").any
+        case .errorIfNotFound: return BoolValue.false
         }
     }
     
@@ -38,7 +46,11 @@ public final class  DictionaryValueForKeyStep: ValueStep {
         else { throw VariableValueError.wrongTypeForOperation }
         
         guard let value = dictionary.elements[StringValue(value: key.valueString)] else {
-            throw VariableValueError.valueNotFoundForVariable(key.protoString)
+            if errorIfNotFound.value {
+                throw VariableValueError.valueNotFoundForVariable(key.protoString)
+            } else {
+                return NilValue()
+            }
         }
         
         return value

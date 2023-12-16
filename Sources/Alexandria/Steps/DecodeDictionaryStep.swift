@@ -23,7 +23,7 @@ public final class DecodeDictionaryStep: ValueStep {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .value: return AnyValue(value: Variable(value: StringValue(value: "$0")))
+        case .value: return AnyValue(value: Variable(value: StringValue(value: "$0").any))
         }
     }
     

@@ -8,6 +8,7 @@
 import SwiftUI
 import MapKit
 import Armstrong
+import DylKit
 
 public final class MakeableMap: MakeableView {
     
@@ -69,7 +70,7 @@ public struct MakeableMapView: View {
     let showEditControls: Bool
     let map: MakeableMap
     let onContentUpdate: (MakeableMap) -> Void
-    let onRuntimeUpdate: () -> Void
+    let onRuntimeUpdate: (@escaping Block) -> Void
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     

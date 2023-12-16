@@ -28,7 +28,7 @@ public final class ConditionalActionValue: CompositeEditableVariableValue, Obser
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
         case .ifCondition: return ComparisonValue(
-            lhs: .init(value: Variable(value: StringValue(value: "VAR"))),
+            lhs: .init(value: Variable(value: StringValue(value: "VAR").any)),
             rhs: .init(value: BoolValue(value: true)),
             comparison: .init(value: .equals)
         )
