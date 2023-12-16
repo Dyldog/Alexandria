@@ -47,10 +47,7 @@ struct MakeableButtonView: View {
         Task { @MainActor in
             if isRunning {
                 do {
-                    for action in button.action {
-                        try await action.run(with: variables)
-                    }
-                    
+                    try await button.action.run(with: variables)                    
                     onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
