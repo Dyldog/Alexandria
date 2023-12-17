@@ -32,7 +32,8 @@ public final class IfStep: Step {
     """ }
     
     public func run(with variables: Variables) async throws {
-        if let ifValue = try? await ifAction.value(with: variables) as? StepArray, !ifValue.value.isEmpty {
+        let ifValue: StepArray = try await ifAction.value(with: variables)
+        if !ifValue.value.isEmpty {
             try await ifValue.run(with: variables)
         } else {
             try await elseAction.run(with: variables)

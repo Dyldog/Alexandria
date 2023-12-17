@@ -37,9 +37,7 @@ public final class ConditionalActionValue: CompositeEditableVariableValue, Obser
     }
     
     public func value(with variables: Variables) async throws -> VariableValue {
-        guard
-            let conditionValue = try await ifCondition.value(with: variables) as? BoolValue
-        else { throw VariableValueError.valueNotFoundForVariable(ifCondition.protoString) }
+        let conditionValue: BoolValue = try await ifCondition.value(with: variables)
 
         if conditionValue.value {
             return ifSteps

@@ -47,7 +47,7 @@ struct MakeableButtonView: View {
         Task { @MainActor in
             if isRunning {
                 do {
-                    try await button.action.run(with: variables)                    
+                    try await button.action.run(with: variables)
                     onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
@@ -62,14 +62,14 @@ struct MakeableButtonView: View {
 public final class MakeableButton: MakeableView, Codable {
     public static var type: VariableType { .button }
     
-    public var title: MakeableLabel
-    public var style: ButtonStyleValue
-    public var action: StepArray
+    @Published public var title: MakeableLabel
+    @Published public var style: ButtonStyleValue
+    @Published public var action: FunctionValue
     
     public var protoString: String { "BUTTON(\(title.protoString))" }
     public var valueString: String { title.valueString }
     
-    public init(title: MakeableLabel, style: ButtonStyleValue, action: StepArray) {
+    public init(title: MakeableLabel, style: ButtonStyleValue, action: FunctionValue) {
         self.title = title
         self.style = style
         self.action = action
@@ -102,13 +102,14 @@ public final class MakeableButton: MakeableView, Codable {
 
 extension MakeableButton: CodeRepresentable {
     public var codeRepresentation: String {
-        """
-        Button {
-            \(action.map { "\t" + $0.codeRepresentation }.joined(separator: "\n"))
-        } label: {
-            \(title.codeRepresentation)
-        }
-        .buttonStyle(\(style.codeRepresentation))
-        """
+        "TODO"
+//        """
+//        Button {
+//            \(action.body.map { "\t" + $0.codeRepresentation }.joined(separator: "\n"))
+//        } label: {
+//            \(title.codeRepresentation)
+//        }
+//        .buttonStyle(\(style.codeRepresentation))
+//        """
     }
 }

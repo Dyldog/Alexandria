@@ -43,7 +43,9 @@ public final class  DictionaryValueForKeyStep: ValueStep {
         
         guard
             let dictionary = try await dictionary.value(with: variables) as? DictionaryValue
-        else { throw VariableValueError.wrongTypeForOperation }
+        else {
+            throw VariableValueError.wrongTypeForOperation
+        }
         
         guard let value = dictionary.elements[StringValue(value: key.valueString)] else {
             if errorIfNotFound.value {

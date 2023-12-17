@@ -41,6 +41,7 @@ public class Alexandria: AAProvider {
     DictionaryValueForKeyStep.self,
     ForEachStep.self,
     FunctionStep.self,
+    FunctionValue.self,
     GetNumberStep.self,
     GetSavedDataStep.self,
     IfStep.self,
@@ -120,6 +121,7 @@ public class Armstrong: AAProvider {
     DictionaryValueForKeyStep.self,
     ForEachStep.self,
     FunctionStep.self,
+    FunctionValue.self,
     GetNumberStep.self,
     GetSavedDataStep.self,
     IfStep.self,
@@ -1094,6 +1096,80 @@ extension FunctionStep {
     }
 }
 
+// FunctionValue
+
+extension FunctionValue: Copying {
+    public func copy() -> FunctionValue {
+        return FunctionValue(
+                    arguments: arguments,
+                    body: body
+        )
+    }
+}
+
+extension FunctionValue {
+     public enum Properties: String, ViewProperty {
+        case arguments
+        case body
+        public var defaultValue: any EditableVariableValue {
+            switch self {
+            case .arguments: return FunctionValue.defaultValue(for: .arguments)
+            case .body: return FunctionValue.defaultValue(for: .body)
+            }
+        }
+    }
+    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
+        .init(
+            arguments: factory(.arguments) as! TypedValue<DictionaryValue>,
+            body: factory(.body) as! TypedValue<StepArray>
+        )
+    }
+
+    public static func makeDefault() -> Self {
+        .init(
+            arguments: Properties.arguments.defaultValue as! TypedValue<DictionaryValue>,
+            body: Properties.body.defaultValue as! TypedValue<StepArray>
+        )
+    }
+    public func value(for property: Properties) -> any EditableVariableValue {
+        switch property {
+            case .arguments: return arguments
+            case .body: return body
+        }
+    }
+
+    public func set(_ value: Any, for property: Properties) {
+        switch property {
+            case .arguments: self.arguments = value as! TypedValue<DictionaryValue>
+            case .body: self.body = value as! TypedValue<StepArray>
+        }
+    }
+}
+
+extension VariableType {
+    public static var function: VariableType { .init(title: "Function") } // FunctionValue
+}
+
+extension FunctionValue {
+    enum CodingKeys: String, CodingKey {
+        case arguments
+        case body
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            arguments: (try? valueContainer.decode(TypedValue<DictionaryValue>.self, forKey: .arguments)) ?? Properties.arguments.defaultValue as! TypedValue<DictionaryValue>,
+            body: (try? valueContainer.decode(TypedValue<StepArray>.self, forKey: .body)) ?? Properties.body.defaultValue as! TypedValue<StepArray>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(arguments, forKey: .arguments)
+        try container.encode(body, forKey: .body)
+    }
+}
+
 // GetNumberStep
 
 extension GetNumberStep: Copying {
@@ -1459,7 +1535,7 @@ extension MakeableButton: Copying {
         return MakeableButton(
                     title: title,
                     style: style,
-                    action: action
+                    action: action.copy()
         )
     }
 }
@@ -1481,7 +1557,7 @@ extension MakeableButton {
         .init(
             title: factory(.title) as! MakeableLabel,
             style: factory(.style) as! ButtonStyleValue,
-            action: factory(.action) as! StepArray
+            action: factory(.action) as! FunctionValue
         )
     }
 
@@ -1489,7 +1565,7 @@ extension MakeableButton {
         .init(
             title: Properties.title.defaultValue as! MakeableLabel,
             style: Properties.style.defaultValue as! ButtonStyleValue,
-            action: Properties.action.defaultValue as! StepArray
+            action: Properties.action.defaultValue as! FunctionValue
         )
     }
     public func value(for property: Properties) -> any EditableVariableValue {
@@ -1504,7 +1580,7 @@ extension MakeableButton {
         switch property {
             case .title: self.title = value as! MakeableLabel
             case .style: self.style = value as! ButtonStyleValue
-            case .action: self.action = value as! StepArray
+            case .action: self.action = value as! FunctionValue
         }
     }
 }
@@ -1525,7 +1601,7 @@ extension MakeableButton {
         self.init(
             title: (try? valueContainer.decode(MakeableLabel.self, forKey: .title)) ?? Properties.title.defaultValue as! MakeableLabel,
             style: (try? valueContainer.decode(ButtonStyleValue.self, forKey: .style)) ?? Properties.style.defaultValue as! ButtonStyleValue,
-            action: (try? valueContainer.decode(StepArray.self, forKey: .action)) ?? Properties.action.defaultValue as! StepArray
+            action: (try? valueContainer.decode(FunctionValue.self, forKey: .action)) ?? Properties.action.defaultValue as! FunctionValue
         )
     }
     public func encode(to encoder: Encoder) throws {
@@ -2388,6 +2464,8 @@ extension VariableStep {
         try container.encode(type, forKey: .type)
     }
 }
+
+
 
 
 
