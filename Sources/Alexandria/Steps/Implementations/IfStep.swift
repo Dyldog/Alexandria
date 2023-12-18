@@ -22,13 +22,11 @@ public final class IfStep: Step {
     }
     
     public var protoString: String { """
-    \(ifAction.protoString)
-    else:\n\t\(elseAction.protoString)
+    \(ifAction.protoString)\(!elseAction.value.isEmpty ? "\nelse:\n\t\(elseAction.protoString)" : "")
     """ }
     
     public var valueString: String { """
-    \(ifAction.valueString)
-    else:\n\t\(elseAction.valueString)
+    \(ifAction.valueString)\(!elseAction.value.isEmpty ? "\nelse:\n\t\(elseAction.valueString)" : "")
     """ }
     
     public func run(with variables: Variables) async throws {
