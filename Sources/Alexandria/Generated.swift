@@ -81,80 +81,6 @@ import DylKit
 
 
 
-
-
-public class Armstrong: AAProvider {
-    public static var steps: [any StepType.Type] {
-    [
-        APIValueStep.self,
-        AddToVarStep.self,
-        ArrayValueStep.self,
-        DecodeArrayStep.self,
-        DecodeDictionaryStep.self,
-        DictionaryKeysStep.self,
-        DictionaryValueForKeyStep.self,
-        ForEachStep.self,
-        FunctionStep.self,
-        GetNumberStep.self,
-        GetSavedDataStep.self,
-        IfStep.self,
-        MakeRangeStep.self,
-        MapStep.self,
-        PrintVarStep.self,
-        SaveDataStep.self,
-        StaticValueStep.self,
-        URLEncodeStep.self,
-        VariableStep.self
-    ]
-    }
-    public static var values: [any EditableVariableValue.Type] {
-    [
-    APIValueStep.self,
-    AddToVarStep.self,
-    ArrayValueStep.self,
-    ComparisonTypeValue.self,
-    ComparisonValue.self,
-    ConditionalActionValue.self,
-    DecodeArrayStep.self,
-    DecodeDictionaryStep.self,
-    DictionaryKeysStep.self,
-    DictionaryValueForKeyStep.self,
-    ForEachStep.self,
-    FunctionStep.self,
-    FunctionValue.self,
-    GetNumberStep.self,
-    GetSavedDataStep.self,
-    IfStep.self,
-    LocationValue.self,
-    MakeRangeStep.self,
-    MakeableButton.self,
-    MakeableField.self,
-    MakeableList.self,
-    MakeableMap.self,
-    MakeableToggle.self,
-    MapStep.self,
-    OptionalValue.self,
-    PrintVarStep.self,
-    SaveDataStep.self,
-    StaticValueStep.self,
-    TemporaryValue.self,
-    URLEncodeStep.self,
-    VariableStep.self,
-    ButtonStyleValue.self,
-    TextAlignmentValue.self
-    ]
-    }
-    public static var views: [any MakeableView.Type] {
-    [
-    MakeableButton.self,
-    MakeableField.self,
-    MakeableList.self,
-    MakeableMap.self,
-    MakeableToggle.self
-    ]
-    }
-}
-
 import SwiftUI
 import DylKit
 
@@ -1533,6 +1459,7 @@ extension VariableType {
 extension MakeableButton: Copying {
     public func copy() -> MakeableButton {
         return MakeableButton(
+                    id: id,
                     title: title,
                     style: style,
                     action: action.copy()
@@ -1555,6 +1482,7 @@ extension MakeableButton {
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
+            id: UUID(),
             title: factory(.title) as! MakeableLabel,
             style: factory(.style) as! ButtonStyleValue,
             action: factory(.action) as! FunctionValue
@@ -1563,6 +1491,7 @@ extension MakeableButton {
 
     public static func makeDefault() -> Self {
         .init(
+            id: UUID(),
             title: Properties.title.defaultValue as! MakeableLabel,
             style: Properties.style.defaultValue as! ButtonStyleValue,
             action: Properties.action.defaultValue as! FunctionValue
@@ -1591,6 +1520,7 @@ extension VariableType {
 
 extension MakeableButton {
     enum CodingKeys: String, CodingKey {
+        case id
         case title
         case style
         case action
@@ -1599,6 +1529,7 @@ extension MakeableButton {
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
+            id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
             title: (try? valueContainer.decode(MakeableLabel.self, forKey: .title)) ?? Properties.title.defaultValue as! MakeableLabel,
             style: (try? valueContainer.decode(ButtonStyleValue.self, forKey: .style)) ?? Properties.style.defaultValue as! ButtonStyleValue,
             action: (try? valueContainer.decode(FunctionValue.self, forKey: .action)) ?? Properties.action.defaultValue as! FunctionValue
@@ -1606,6 +1537,7 @@ extension MakeableButton {
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(title, forKey: .title)
         try container.encode(style, forKey: .style)
         try container.encode(action, forKey: .action)
@@ -1617,6 +1549,7 @@ extension MakeableButton {
 extension MakeableField: Copying {
     public func copy() -> MakeableField {
         return MakeableField(
+                    id: id,
                     text: text.copy(),
                     fontSize: fontSize,
                     onTextUpdate: onTextUpdate,
@@ -1648,6 +1581,7 @@ extension MakeableField {
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
+            id: UUID(),
             text: factory(.text) as! TemporaryValue,
             fontSize: factory(.fontSize) as! IntValue,
             onTextUpdate: factory(.onTextUpdate) as! StepArray,
@@ -1659,6 +1593,7 @@ extension MakeableField {
 
     public static func makeDefault() -> Self {
         .init(
+            id: UUID(),
             text: Properties.text.defaultValue as! TemporaryValue,
             fontSize: Properties.fontSize.defaultValue as! IntValue,
             onTextUpdate: Properties.onTextUpdate.defaultValue as! StepArray,
@@ -1696,6 +1631,7 @@ extension VariableType {
 
 extension MakeableField {
     enum CodingKeys: String, CodingKey {
+        case id
         case text
         case fontSize
         case onTextUpdate
@@ -1707,6 +1643,7 @@ extension MakeableField {
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
+            id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
             text: (try? valueContainer.decode(TemporaryValue.self, forKey: .text)) ?? Properties.text.defaultValue as! TemporaryValue,
             fontSize: (try? valueContainer.decode(IntValue.self, forKey: .fontSize)) ?? Properties.fontSize.defaultValue as! IntValue,
             onTextUpdate: (try? valueContainer.decode(StepArray.self, forKey: .onTextUpdate)) ?? Properties.onTextUpdate.defaultValue as! StepArray,
@@ -1717,6 +1654,7 @@ extension MakeableField {
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(text, forKey: .text)
         try container.encode(fontSize, forKey: .fontSize)
         try container.encode(onTextUpdate, forKey: .onTextUpdate)
@@ -1731,6 +1669,7 @@ extension MakeableField {
 extension MakeableList: Copying {
     public func copy() -> MakeableList {
         return MakeableList(
+                    id: id,
                     data: data,
                     view: view
         )
@@ -1750,6 +1689,7 @@ extension MakeableList {
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
+            id: UUID(),
             data: factory(.data) as! TypedValue<ArrayValue>,
             view: factory(.view) as! AnyMakeableView
         )
@@ -1757,6 +1697,7 @@ extension MakeableList {
 
     public static func makeDefault() -> Self {
         .init(
+            id: UUID(),
             data: Properties.data.defaultValue as! TypedValue<ArrayValue>,
             view: Properties.view.defaultValue as! AnyMakeableView
         )
@@ -1782,6 +1723,7 @@ extension VariableType {
 
 extension MakeableList {
     enum CodingKeys: String, CodingKey {
+        case id
         case data
         case view
     }
@@ -1789,12 +1731,14 @@ extension MakeableList {
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
+            id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
             data: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .data)) ?? Properties.data.defaultValue as! TypedValue<ArrayValue>,
             view: (try? valueContainer.decode(AnyMakeableView.self, forKey: .view)) ?? Properties.view.defaultValue as! AnyMakeableView
         )
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(data, forKey: .data)
         try container.encode(view, forKey: .view)
     }
@@ -1811,6 +1755,7 @@ extension MakeableList {
 extension MakeableMap: Copying {
     public func copy() -> MakeableMap {
         return MakeableMap(
+                    id: id,
                     locations: locations,
                     zoomFollowsNewAnnotations: zoomFollowsNewAnnotations
         )
@@ -1830,6 +1775,7 @@ extension MakeableMap {
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
+            id: UUID(),
             locations: factory(.locations) as! TypedValue<ArrayValue>,
             zoomFollowsNewAnnotations: factory(.zoomFollowsNewAnnotations) as! BoolValue
         )
@@ -1837,6 +1783,7 @@ extension MakeableMap {
 
     public static func makeDefault() -> Self {
         .init(
+            id: UUID(),
             locations: Properties.locations.defaultValue as! TypedValue<ArrayValue>,
             zoomFollowsNewAnnotations: Properties.zoomFollowsNewAnnotations.defaultValue as! BoolValue
         )
@@ -1862,6 +1809,7 @@ extension VariableType {
 
 extension MakeableMap {
     enum CodingKeys: String, CodingKey {
+        case id
         case locations
         case zoomFollowsNewAnnotations
     }
@@ -1869,12 +1817,14 @@ extension MakeableMap {
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
+            id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
             locations: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .locations)) ?? Properties.locations.defaultValue as! TypedValue<ArrayValue>,
             zoomFollowsNewAnnotations: (try? valueContainer.decode(BoolValue.self, forKey: .zoomFollowsNewAnnotations)) ?? Properties.zoomFollowsNewAnnotations.defaultValue as! BoolValue
         )
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(locations, forKey: .locations)
         try container.encode(zoomFollowsNewAnnotations, forKey: .zoomFollowsNewAnnotations)
     }
@@ -1885,6 +1835,7 @@ extension MakeableMap {
 extension MakeableToggle: Copying {
     public func copy() -> MakeableToggle {
         return MakeableToggle(
+                    id: id,
                     isOn: isOn.copy(),
                     onToggleUpdate: onToggleUpdate,
                     padding: padding
@@ -1907,6 +1858,7 @@ extension MakeableToggle {
     }
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
+            id: UUID(),
             isOn: factory(.isOn) as! TemporaryValue,
             onToggleUpdate: factory(.onToggleUpdate) as! StepArray,
             padding: factory(.padding) as! IntValue
@@ -1915,6 +1867,7 @@ extension MakeableToggle {
 
     public static func makeDefault() -> Self {
         .init(
+            id: UUID(),
             isOn: Properties.isOn.defaultValue as! TemporaryValue,
             onToggleUpdate: Properties.onToggleUpdate.defaultValue as! StepArray,
             padding: Properties.padding.defaultValue as! IntValue
@@ -1943,6 +1896,7 @@ extension VariableType {
 
 extension MakeableToggle {
     enum CodingKeys: String, CodingKey {
+        case id
         case isOn
         case onToggleUpdate
         case padding
@@ -1951,6 +1905,7 @@ extension MakeableToggle {
     public convenience init(from decoder: Decoder) throws {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
+            id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
             isOn: (try? valueContainer.decode(TemporaryValue.self, forKey: .isOn)) ?? Properties.isOn.defaultValue as! TemporaryValue,
             onToggleUpdate: (try? valueContainer.decode(StepArray.self, forKey: .onToggleUpdate)) ?? Properties.onToggleUpdate.defaultValue as! StepArray,
             padding: (try? valueContainer.decode(IntValue.self, forKey: .padding)) ?? Properties.padding.defaultValue as! IntValue
@@ -1958,6 +1913,7 @@ extension MakeableToggle {
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
         try container.encode(isOn, forKey: .isOn)
         try container.encode(onToggleUpdate, forKey: .onToggleUpdate)
         try container.encode(padding, forKey: .padding)
@@ -2464,9 +2420,6 @@ extension VariableStep {
         try container.encode(type, forKey: .type)
     }
 }
-
-
-
 
 
 

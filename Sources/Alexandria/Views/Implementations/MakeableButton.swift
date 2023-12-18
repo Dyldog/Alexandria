@@ -62,6 +62,8 @@ struct MakeableButtonView: View {
 public final class MakeableButton: MakeableView, Codable {
     public static var type: VariableType { .button }
     
+    public let id: UUID
+    
     @Published public var title: MakeableLabel
     @Published public var style: ButtonStyleValue
     @Published public var action: FunctionValue
@@ -69,7 +71,8 @@ public final class MakeableButton: MakeableView, Codable {
     public var protoString: String { "BUTTON(\(title.protoString))" }
     public var valueString: String { title.valueString }
     
-    public init(title: MakeableLabel, style: ButtonStyleValue, action: FunctionValue) {
+    public init(id: UUID, title: MakeableLabel, style: ButtonStyleValue, action: FunctionValue) {
+        self.id = id
         self.title = title
         self.style = style
         self.action = action
@@ -81,6 +84,7 @@ public final class MakeableButton: MakeableView, Codable {
     
     public func value(with variables: Variables) async throws -> VariableValue {
         try await MakeableButton(
+            id: id,
             title: title.value(with: variables),
             style: style.value(with: variables),
             action: action.value(with: variables)

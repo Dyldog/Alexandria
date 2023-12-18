@@ -17,13 +17,15 @@ public final class MakeableList: MakeableView {
     
     public static var type: VariableType { .listView }
     
+    public let id: UUID
     public var protoString: String { data.protoString }
     public var valueString: String { data.valueString }
         
     public var data: TypedValue<ArrayValue>
     public var view: AnyMakeableView
     
-    public init(data: TypedValue<ArrayValue>, view: AnyMakeableView) {
+    public init(id: UUID, data: TypedValue<ArrayValue>, view: AnyMakeableView) {
+        self.id = id
         self.data = data
         self.view = view
     }
@@ -99,7 +101,7 @@ public struct MakeableListView: View {
     
     public var body: some View {
         VStack {
-            ForEach(enumerated: views) { index, view in
+            ForEach(views.enumeratedArray(), id: \.offset) { index, view in
                 MakeableWrapperView(
                     isRunning: isRunning,
                     showEditControls: showEditControls,

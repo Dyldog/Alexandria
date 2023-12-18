@@ -14,13 +14,16 @@ public final class MakeableMap: MakeableView {
     
     public static var type: VariableType { .map }
     
+    public let id: UUID
+    
     public var locations: TypedValue<ArrayValue>
     public var zoomFollowsNewAnnotations: BoolValue
     
     public var protoString: String { "TODO" }
     public var valueString: String { "TODO" }
     
-    public init(locations: TypedValue<ArrayValue>, zoomFollowsNewAnnotations: BoolValue) {
+    public init(id: UUID, locations: TypedValue<ArrayValue>, zoomFollowsNewAnnotations: BoolValue) {
+        self.id = id
         self.locations = locations
         self.zoomFollowsNewAnnotations = zoomFollowsNewAnnotations
     }

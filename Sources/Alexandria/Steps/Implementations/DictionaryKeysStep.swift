@@ -29,7 +29,7 @@ public final class  DictionaryKeysStep: ValueStep {
     
     public func run(with variables: Variables) async throws -> VariableValue {
         let dictionary: DictionaryValue = try await dictionary.value(with: variables)
-        return ArrayValue(type: .string, elements: Array(dictionary.elements.keys))
+        return ArrayValue(type: .string, elements: dictionary.elements.keys.map { StringValue(value: $0) })
     }
 }
 

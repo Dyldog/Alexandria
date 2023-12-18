@@ -53,7 +53,7 @@ public final class FunctionValue: CompositeEditableVariableValue, ObservableObje
         for arg in args.elements {
             await funcVariables.set(
                 try await arg.value.value(with: funcVariables),
-                for: try arg.key.value(with: funcVariables).valueString
+                for: arg.key
             )
         }
         let body: StepArray = try await body.value(with: funcVariables)

@@ -13,6 +13,8 @@ public final class MakeableToggle: MakeableView {
     
     public static var type: VariableType { .toggle }
     
+    public let id: UUID
+    
     public var isOn: TemporaryValue
     public var onToggleUpdate: StepArray
     public var padding: IntValue
@@ -20,7 +22,8 @@ public final class MakeableToggle: MakeableView {
     public var protoString: String { isOn.protoString }
     public var valueString: String { isOn.valueString }
     
-    public init(isOn: TemporaryValue, onToggleUpdate: StepArray, padding: IntValue) {
+    public init(id: UUID, isOn: TemporaryValue, onToggleUpdate: StepArray, padding: IntValue) {
+        self.id = id
         self.isOn = isOn
         self.onToggleUpdate = onToggleUpdate
         self.padding = padding

@@ -87,6 +87,8 @@ struct MakeableFieldView: View {
 public final class MakeableField: MakeableView, Codable {
     
     public static var type: VariableType { .field }
+    
+    public let id: UUID
     public var text: TemporaryValue
     public var fontSize: IntValue
     public var onTextUpdate: StepArray
@@ -94,7 +96,8 @@ public final class MakeableField: MakeableView, Codable {
     public var alignment: TextAlignmentValue
     public var isMultiline: BoolValue
     
-    public init(text: TemporaryValue, fontSize: IntValue, onTextUpdate: StepArray, padding: IntValue, alignment: TextAlignmentValue, isMultiline: BoolValue) {
+    public init(id: UUID, text: TemporaryValue, fontSize: IntValue, onTextUpdate: StepArray, padding: IntValue, alignment: TextAlignmentValue, isMultiline: BoolValue) {
+        self.id = id
         self.text = text
         self.fontSize = fontSize
         self.onTextUpdate = onTextUpdate
@@ -124,6 +127,7 @@ public final class MakeableField: MakeableView, Codable {
     public func value(with variables: Variables) async throws -> VariableValue {
 //        self
         try await MakeableField(
+            id: id,
             text: TemporaryValue(
                 initial: (text.value(with: variables) as (any EditableVariableValue)).any,
                 output: text.output
