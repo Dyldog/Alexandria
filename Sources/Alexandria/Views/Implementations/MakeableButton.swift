@@ -94,7 +94,7 @@ public final class MakeableButton: MakeableView, Codable {
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
         case .title: return MakeableLabel.makeDefault()
-        case .action: return StepArray(value: [])
+        case .action: return FunctionValue.makeDefault()
         case .style: return ButtonStyleValue(value: .bordered)
         }
     }
