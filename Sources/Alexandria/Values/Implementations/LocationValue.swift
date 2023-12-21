@@ -25,11 +25,11 @@ public final class LocationValue: CompositeEditableVariableValue {
         self.longitude = longitude
     }
 
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         LocationValue(
-            name: .value(try await name.value(with: variables)),
-            latitude: .value(try await latitude.value(with: variables)),
-            longitude: .value(try await longitude.value(with: variables))
+            name: .value(try await name.value(with: variables, and: scope)),
+            latitude: .value(try await latitude.value(with: variables, and: scope)),
+            longitude: .value(try await longitude.value(with: variables, and: scope))
         )
     }
     

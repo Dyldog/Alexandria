@@ -21,8 +21,8 @@ public final class PrintVarStep: Step, Codable {
         self.varName = varName
     }
     
-    public func run(with variables: Variables) async throws {
-        let value = try await varName.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws {
+        let value = try await varName.value(with: variables, and: scope)
         print("\(varName.valueString): \(value.valueString)")
     }
     

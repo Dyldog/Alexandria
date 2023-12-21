@@ -28,8 +28,8 @@ public final class URLEncodeStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let value: StringValue = try await value.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let value: StringValue = try await value.value(with: variables, and: scope)
         return StringValue(value: value.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
     }
 }

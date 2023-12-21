@@ -30,8 +30,8 @@ public final class GetNumberStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let value = try await value.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let value = try await value.value(with: variables, and: scope)
         return try numberType.value.make(from: value.valueString)
     }
 }

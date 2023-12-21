@@ -31,10 +31,10 @@ public final class ArrayValueStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables) async throws -> VariableValue {
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         guard
-            let index = try await index.value(with: variables) as? IntValue,
-            let array = try await array.value(with: variables) as? ArrayValue
+            let index = try await index.value(with: variables, and: scope) as? IntValue,
+            let array = try await array.value(with: variables, and: scope) as? ArrayValue
         else { throw VariableValueError.wrongTypeForOperation }
         
         guard let value = array.elements[safe: index.value] else {

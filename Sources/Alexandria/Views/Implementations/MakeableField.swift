@@ -12,6 +12,7 @@ import DylKit
 struct MakeableFieldView: View {
     let isRunning: Bool
     let showEditControls: Bool
+    let scope: Scope
     let field: MakeableField
     let onContentUpdate: (MakeableField) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
@@ -51,7 +52,7 @@ struct MakeableFieldView: View {
     
     private func updateValues() async  {
         do {
-            let value = try await field.text.value(with: variables).valueString
+            let value = try await field.text.value(with: variables, and: scope).valueString
             self.text = value
         } catch let error as VariableValueError {
             self.error = error
@@ -67,9 +68,9 @@ struct MakeableFieldView: View {
         Task { @MainActor in
             do {
                 if isRunning {
-                    let outputVar = try await field.text.output.value.value(with: variables)
+                    let outputVar = try await field.text.output.value.value(with: variables, and: scope)
                     variables.set(AnyValue(value: StringValue(value: string)), for: outputVar.valueString)
-                    try await field.onTextUpdate.run(with: variables)
+                    try await field.onTextUpdate.run(with: variables, and: scope)
                 }
             } catch let error as VariableValueError {
                 self.error = error
@@ -124,27 +125,27 @@ public final class MakeableField: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
 //        self
         try await MakeableField(
             id: id,
             text: TemporaryValue(
-                initial: (text.value(with: variables) as (any EditableVariableValue)).any,
+                initial: (text.value(with: variables, and: scope) as (any EditableVariableValue)).any,
                 output: text.output
             ),
-            fontSize: fontSize.value(with: variables),
-            onTextUpdate: onTextUpdate.value(with: variables),
-            padding: padding.value(with: variables),
-            alignment: alignment.value(with: variables),
-            isMultiline: isMultiline.value(with: variables)
+            fontSize: fontSize.value(with: variables, and: scope),
+            onTextUpdate: onTextUpdate.value(with: variables, and: scope),
+            padding: padding.value(with: variables, and: scope),
+            alignment: alignment.value(with: variables, and: scope),
+            isMultiline: isMultiline.value(with: variables, and: scope)
         )
     }
     
-    public func insertValues(into variables: Variables) async throws {
-        let outputVarName = try await text.output.value.value(with: variables)
-        let outputValue = try await text.value(with: variables)
+    public func insertValues(into variables: Variables, with scope: Scope) async throws {
+        let outputVarName = try await text.output.value.value(with: variables, and: scope)
+        let outputValue = try await text.value(with: variables, and: scope)
         await variables.set(outputValue, for: outputVarName.valueString)
-        try await onTextUpdate.run(with: variables)
+        try await onTextUpdate.run(with: variables, and: scope)
     }
 }
 

@@ -35,10 +35,10 @@ public final class MakeRangeStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let start: any NumericValue = try await start.value(with: variables)
-        let end: any NumericValue = try await end.value(with: variables)
-        let step: any NumericValue = try await step.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let start: any NumericValue = try await start.value(with: variables, and: scope)
+        let end: any NumericValue = try await end.value(with: variables, and: scope)
+        let step: any NumericValue = try await step.value(with: variables, and: scope)
         
         func hasPassed(current: any NumericValue, step: any NumericValue, max: any NumericValue) -> Bool {
             let isPositive = (step.value.floatValue / abs(step.value.floatValue)) > 0

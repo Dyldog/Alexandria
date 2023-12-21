@@ -37,10 +37,10 @@ public final class ComparisonValue: CompositeEditableVariableValue {
         throw VariableValueError.variableCannotPerformOperation(.comparison, "add")
     }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         comparison.compare(
-            lhs: try await lhs.value(with: variables),
-            rhs: try await rhs.value(with: variables)
+            lhs: try await lhs.value(with: variables, and: scope),
+            rhs: try await rhs.value(with: variables, and: scope)
         )
     }
 }

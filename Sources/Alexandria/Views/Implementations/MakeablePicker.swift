@@ -39,16 +39,16 @@ public final class MakeableToggle: MakeableView {
         }
     }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables) async throws {
-        let outputVarName = try await isOn.output.value.value(with: variables)
-        let outputValue = try await isOn.value(with: variables)
+    public func insertValues(into variables: Variables, with scope: Scope) async throws {
+        let outputVarName = try await isOn.output.value.value(with: variables, and: scope)
+        let outputValue = try await isOn.value(with: variables, and: scope)
         await variables.set(outputValue, for: outputVarName.valueString)
         
-        try await onToggleUpdate.run(with: variables)
+        try await onToggleUpdate.run(with: variables, and: scope)
     }
     
     public func add(_ other: VariableValue) throws -> VariableValue {
@@ -59,6 +59,7 @@ public final class MakeableToggle: MakeableView {
 struct MakeableToggleView: View {
     let isRunning: Bool
     let showEditControls: Bool
+    let scope: Scope
     let toggle: MakeableToggle
     let onContentUpdate: (MakeableToggle) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
@@ -76,7 +77,7 @@ struct MakeableToggleView: View {
             })).fixedSize().any
         }.task(id: variables.hashValue) {
             do {
-                guard let value = try await toggle.isOn.value(with: variables) as? BoolValue
+                guard let value = try await toggle.isOn.value(with: variables, and: scope) as? BoolValue
                 else { throw VariableValueError.valueNotFoundForVariable(toggle.isOn.protoString) }
                 self.isOn = value.value
             } catch let error as VariableValueError {
@@ -93,9 +94,9 @@ struct MakeableToggleView: View {
         Task { @MainActor in
             do {
                 if isRunning {
-                  let outputVar = try await toggle.isOn.output.value.value(with: variables)
+                  let outputVar = try await toggle.isOn.output.value.value(with: variables, and: scope)
                     variables.set(AnyValue(value: BoolValue(value: value)), for: outputVar.valueString)
-                    try await toggle.onToggleUpdate.run(with: variables)
+                    try await toggle.onToggleUpdate.run(with: variables, and: scope)
                 }
             } catch let error as VariableValueError {
                 self.error = error

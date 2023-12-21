@@ -27,8 +27,8 @@ public final class DecodeDictionaryStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let value = try await value.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let value = try await value.value(with: variables, and: scope)
         
         return DictionaryValue.from(try JSONSerialization.jsonObject(
             with: value.valueString.data(using: .utf8)!,

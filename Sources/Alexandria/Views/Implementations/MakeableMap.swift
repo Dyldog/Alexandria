@@ -35,11 +35,11 @@ public final class MakeableMap: MakeableView {
         }
     }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables) async throws {
+    public func insertValues(into variables: Variables, with scope: Scope) async throws {
         
     }
     
@@ -71,6 +71,7 @@ public struct Location: Identifiable, Hashable {
 public struct MakeableMapView: View {
     let isRunning: Bool
     let showEditControls: Bool
+    let scope: Scope
     let map: MakeableMap
     let onContentUpdate: (MakeableMap) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
@@ -94,13 +95,13 @@ public struct MakeableMapView: View {
             }
         }.task(id: variables.hashValue) {
             do {
-                let value = try await (try await map.locations.value(with: variables) as? ArrayValue)?.elements.asyncMap {
+                let value = try await (try await map.locations.value(with: variables, and: scope) as? ArrayValue)?.elements.asyncMap {
                     guard let location = $0 as? LocationValue else { throw VariableValueError.wrongTypeForOperation }
                     return Location(
-                        name: (try await location.name.value(with: variables) as StringValue).value,
+                        name: (try await location.name.value(with: variables, and: scope) as StringValue).value,
                         coordinate: .init(
-                            latitude: Double((try await location.latitude.value(with: variables) as FloatValue).value),
-                            longitude: Double((try await location.longitude.value(with: variables) as FloatValue).value)
+                            latitude: Double((try await location.latitude.value(with: variables, and: scope) as FloatValue).value),
+                            longitude: Double((try await location.longitude.value(with: variables, and: scope) as FloatValue).value)
                         )
                     )
                 }

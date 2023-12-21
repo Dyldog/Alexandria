@@ -30,11 +30,11 @@ public final class SaveDataStep: Step {
         }
     }
 
-    public func run(with variables: Variables) async throws {
-        let value: EditableVariableValue = try await data.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws {
+        let value: EditableVariableValue = try await data.value(with: variables, and: scope)
         await UserDefaults.standard.set(
             CodableVariableValue(value: value).encoded(),
-            forKey: try key.value(with: variables).valueString
+            forKey: try key.value(with: variables, and: scope).valueString
         )
     }
 }

@@ -12,25 +12,27 @@ import DylKit
 struct MakeableButtonView: View {
     let isRunning: Bool
     let showEditControls: Bool
+    let scope: Scope
     let button: MakeableButton
     let onContentUpdate: (MakeableButton) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
-    init(isRunning: Bool, showEditControls: Bool, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
+    init(isRunning: Bool, showEditControls: Bool, scope: Scope, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.isRunning = isRunning
         self.showEditControls = showEditControls
         self.button = button
         self.onContentUpdate = onContentUpdate
         self.onRuntimeUpdate = onRuntimeUpdate
         self._error = error
+        self.scope = scope 
     }
     var body: some View {
         return SwiftUI.Button(action: {
             runAction()
         }, label: {
-            MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, label: button.title, onContentUpdate: {
+            MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, label: button.title, onContentUpdate: {
                 button.title = $0
                 onContentUpdate(button)
             }, onRuntimeUpdate: { completion in
@@ -47,7 +49,7 @@ struct MakeableButtonView: View {
         Task { @MainActor in
             if isRunning {
                 do {
-                    try await button.action.run(with: variables)
+                    try await button.action.run(with: variables, and: scope)
                     onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
@@ -82,12 +84,12 @@ public final class MakeableButton: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         try await MakeableButton(
             id: id,
-            title: title.value(with: variables),
-            style: style.value(with: variables),
-            action: action.value(with: variables)
+            title: title.value(with: variables, and: scope),
+            style: style.value(with: variables, and: scope),
+            action: action.value(with: variables, and: scope)
         )
     }
     
@@ -99,7 +101,7 @@ public final class MakeableButton: MakeableView, Codable {
         }
     }
     
-    public func insertValues(into variables: Variables) throws {
+    public func insertValues(into variables: Variables, with scope: Scope) throws {
         //
     }
 }

@@ -38,11 +38,11 @@ public final class  DictionaryValueForKeyStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let key = try await key.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let key = try await key.value(with: variables, and: scope)
         
         guard
-            let dictionary = try await dictionary.value(with: variables) as? DictionaryValue
+            let dictionary = try await dictionary.value(with: variables, and: scope) as? DictionaryValue
         else {
             throw VariableValueError.wrongTypeForOperation
         }

@@ -31,18 +31,18 @@ public final class MapStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables) async throws -> VariableValue {
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         var outputs: [any EditableVariableValue] = []
         
-        for value in try await value.value.value(with: variables).elements {
+        for value in try await value.value.value(with: variables, and: scope).elements {
             let variables = await variables.copy()
-            let value = try await value.value(with: variables)
+            let value = try await value.value(with: variables, and: scope)
             await variables.set(value, for: "$INPUT")
-            try await mapper.run(with: variables)
+            try await mapper.run(with: variables, and: scope)
             guard let returnValue = await variables.value(for: "$0") else {
                 throw Error.noValueReturnedFromMap
             }
-            outputs.append(try await returnValue.value(with: variables))
+            outputs.append(try await returnValue.value(with: variables, and: scope))
         }
         
         return ArrayValue(type: outputs.first.map { Swift.type(of: $0).type } ?? .string, elements: outputs)

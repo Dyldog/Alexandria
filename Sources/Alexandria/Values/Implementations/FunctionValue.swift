@@ -40,24 +40,24 @@ public final class FunctionValue: CompositeEditableVariableValue, ObservableObje
     
     public var valueString: String { "(\(arguments.valueString)) -> \(body.valueString)" }
     
-    public func value(with variables: Variables) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         try await FunctionValue(
-            arguments: .value(arguments.value(with: variables)),
-            body: .value(body.value(with: variables))
+            arguments: .value(arguments.value(with: variables, and: scope)),
+            body: .value(body.value(with: variables, and: scope))
         )
     }
     
-    public func run(with variables: Variables) async throws {
+    public func run(with variables: Variables, and scope: Scope) async throws {
         let funcVariables = variables
-        let args: DictionaryValue = try await arguments.value(with: funcVariables)
+        let args: DictionaryValue = try await arguments.value(with: funcVariables, and: scope)
         for arg in args.elements {
             await funcVariables.set(
-                try await arg.value.value(with: funcVariables),
+                try await arg.value.value(with: funcVariables, and: scope),
                 for: arg.key
             )
         }
-        let body: StepArray = try await body.value(with: funcVariables)
-        try await  body.run(with: funcVariables)
+        let body: StepArray = try await body.value(with: funcVariables, and: scope)
+        try await  body.run(with: funcVariables, and: scope)
         
         await variables.set(await funcVariables.value(for: "$0") ?? NilValue(), for: "$0")
     }

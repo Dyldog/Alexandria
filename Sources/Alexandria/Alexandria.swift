@@ -25,6 +25,7 @@ extension Alexandria {
             DictionaryKeysStep(dictionary: .init(value: .variable(.named("$0")))),
             SetVarStep(varName: .string("KEYS"), value: .variable(named: "$0"))
         ]),
+        subscreens: [],
         content: MakeableStack(id: .init(), content: .value(ArrayValue(type: .base, elements: [
             MakeableLabel(
                 id: .init(), text: .variable(named: "IP"),
@@ -59,7 +60,9 @@ extension Alexandria {
         initVariables: .makeDefault(),
         initActions: .init(value: [
             SetVarStep(varName: .string("COUNT"), value: .int(0))
-        ]), content: MakeableStack(id: .init(), content: .value(ArrayValue(type: .base, elements: [
+        ]),
+        subscreens: [],
+        content: MakeableStack(id: .init(), content: .value(ArrayValue(type: .base, elements: [
             MakeableButton(id: .init(), title: .text(.variable(named: "COUNT"), size: 120), style: .makeDefault(), action: .init(value: [
                 AddToVarStep(varName: .string("COUNT"), value: .int(1))
             ]))
@@ -77,7 +80,9 @@ extension Alexandria {
                 dictionary: .init(value: .variable(.named("$0"))), key: .string("rates")
             ),
             SetVarStep(varName: .string("JSON"), value: .variable(named: "$0"))
-        ]), content: .init(axis: .horizontal, [
+        ]), 
+        subscreens: [],
+        content: .init(axis: .horizontal, [
             MakeableStack([
                 MakeableLabel.withText("AUD", fontSize: 24, bold: true),
                 MakeableField(
@@ -121,6 +126,7 @@ extension Alexandria {
         id: .init(), name: "Mappy Boy",
         initVariables: .makeDefault(),
         initActions: .init(value: []),
+        subscreens: [],
         content: .init([
             MakeableField(
                 id: .init(), text: .init(initial: .string("Australia"), output: .named("SEARCH")),
@@ -164,6 +170,7 @@ extension Alexandria {
             GetSavedDataStep(key: .value(.init(value: "KEY"))),
             SetVarStep(varName: .string("FIELDTEXT"), value: .variable(named: "$0"))
         ]),
+        subscreens: [],
         content: .init([
             MakeableLabel.text(.string("App Notes"), size: 36),
             MakeableField(

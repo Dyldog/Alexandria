@@ -27,9 +27,9 @@ public final class GetSavedDataStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables) async throws -> VariableValue {
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
         guard let data = await UserDefaults.standard.data(
-            forKey: try key.value(with: variables).valueString
+            forKey: try key.value(with: variables, and: scope).valueString
         ) else { return NilValue.makeDefault() }
         return try JSONDecoder().decode(CodableVariableValue.self, from: data).value
     }

@@ -30,11 +30,11 @@ public final class MakeableList: MakeableView {
         self.view = view
     }
     
-    public func insertValues(into variables: Variables) throws { }
+    public func insertValues(into variables: Variables, with scope: Scope) throws { }
     
     public func add(_ other: VariableValue) throws -> VariableValue { fatalError() }
 
-    public func value(with variables: Variables) async throws -> VariableValue { self }
+    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue { self }
 
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
@@ -54,20 +54,20 @@ public final class MakeableList: MakeableView {
         }
     }
     
-    public func valueViews(with variables: Variables) async throws -> [any MakeableView] {
+    public func valueViews(with variables: Variables, and scope: Scope) async throws -> [any MakeableView] {
         var views: [any MakeableView] = []
         
-        let elements = try await data.value.value(with: variables).elements
+        let elements = try await data.value.value(with: variables, and: scope).elements
         for data in elements  {
             let variables = await variables.copy()
             
             let value = try await data.value(
-                with: variables
+                with: variables, and: scope
             )
             
             await variables.set(value, for: "$0")
             
-            let valueView: any MakeableView = try await view.value(with: variables)
+            let valueView: any MakeableView = try await view.value(with: variables, and: scope)
             
             views.append(valueView)
         }
@@ -79,6 +79,7 @@ public final class MakeableList: MakeableView {
 public struct MakeableListView: View {
     let isRunning: Bool
     let showEditControls: Bool
+    let scope: Scope
     let listView: MakeableList
     
     let onContentUpdate: (MakeableList) -> Void
@@ -89,7 +90,7 @@ public struct MakeableListView: View {
     
     @State var views: [any MakeableView] = []
     
-    public init(isRunning: Bool, showEditControls: Bool, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
+    public init(isRunning: Bool, showEditControls: Bool, scope: Scope, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.isRunning = isRunning
         self.showEditControls = showEditControls
         self.listView = listView
@@ -97,6 +98,7 @@ public struct MakeableListView: View {
         self.onRuntimeUpdate = onRuntimeUpdate
         self._variables = .init()
         self._error = error
+        self.scope = scope
     }
     
     public var body: some View {
@@ -104,7 +106,8 @@ public struct MakeableListView: View {
             ForEach(views.enumeratedArray(), id: \.offset) { index, view in
                 MakeableWrapperView(
                     isRunning: isRunning,
-                    showEditControls: showEditControls,
+                    showEditControls: showEditControls, 
+                    scope: scope,
                     view: view,
                     onContentUpdate: {
                         views[index] = $0
@@ -120,7 +123,7 @@ public struct MakeableListView: View {
         }.task(id: variables.hashValue) {
             do {
                 if isRunning {
-                    views = try await listView.valueViews(with: variables)
+                    views = try await listView.valueViews(with: variables, and: scope)
                 } else {
                     views = listView.protoViews()
                 }

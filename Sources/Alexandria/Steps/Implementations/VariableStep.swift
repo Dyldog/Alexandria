@@ -30,13 +30,13 @@ public final class VariableStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables) async throws -> VariableValue {
-        let nameValue = try await varName.value(with: variables)
+    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+        let nameValue = try await varName.value(with: variables, and: scope)
         
         guard let value = await variables.value(for: nameValue.valueString)
         else { throw VariableValueError.valueNotFoundForVariable(varName.protoString) }
         
-        return try await value.value(with: variables)
+        return try await value.value(with: variables, and: scope)
     }
 }
 
