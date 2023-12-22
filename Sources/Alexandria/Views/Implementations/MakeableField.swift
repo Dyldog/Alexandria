@@ -34,7 +34,9 @@ struct MakeableFieldView: View {
             onTextUpdate($0)
         })
         
-        if field.isMultiline.value {
+        if isWidget {
+            return Text(binding.wrappedValue).any
+        } else if field.isMultiline.value {
             return TextEditor(text: binding).any
         } else {
             return TextField("", text: binding).any
