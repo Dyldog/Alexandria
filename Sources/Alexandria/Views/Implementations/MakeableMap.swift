@@ -78,20 +78,39 @@ public struct MakeableMapView: View {
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
-    @State var locations: [Location] = []
+//    @State var locations: [Location] = []
     
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10))
     
     public var body: some View {
-        Map(coordinateRegion: $region, annotationItems: locations) { place in
+        let variables = variables.copy()
+        let locations: [Location] = `do` {
+            return try (try map.locations.value(with: variables, and: scope) as? ArrayValue)?.elements.map {
+                guard let location = $0 as? LocationValue else { throw VariableValueError.wrongTypeForOperation }
+                return Location(
+                    name: (try location.name.value(with: variables, and: scope) as StringValue).value,
+                    coordinate: .init(
+                        latitude: Double((try location.latitude.value(with: variables, and: scope) as FloatValue).value),
+                        longitude: Double((try location.longitude.value(with: variables, and: scope) as FloatValue).value)
+                    )
+                )
+            } ?? []
+        } onError: {
+            self.handleError($0)
+            return []
+        }
+        
+//        if !locations.isEmpty {
+//            region = locations.map { $0.coordinate }.regionThatFits
+//        }
+        
+        return Map(coordinateRegion: $region, annotationItems: locations) { place in
             MapAnnotation(coordinate: place.coordinate) {
                 PlaceAnnotationView(title: place.name)
             }
-        }.if(map.zoomFollowsNewAnnotations.value) {
-            $0.onChange(of: locations) { _ in
-                if !locations.isEmpty {
-                    region = locations.map { $0.coordinate }.regionThatFits
-                }
+        }.onAppear {
+            if !locations.isEmpty {
+                region = locations.map { $0.coordinate }.regionThatFits
             }
         }
 //        .task(id: variables.hashValue) {
@@ -113,6 +132,14 @@ public struct MakeableMapView: View {
 //                fatalError(error.localizedDescription)
 //            }
 //        }
+    }
+    
+    private func handleError(_ error: Error) {
+        if let error = error as? VariableValueError {
+            self.error = error
+        } else {
+            print(error.localizedDescription)
+        }
     }
 }
 
