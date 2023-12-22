@@ -131,7 +131,7 @@ public final class ButtonStyleValue: PrimitiveEditableVariableValue, Codable, Co
     }
     public var protoString: String { "\(value.title)" }
     public var valueString: String { protoString }
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
         self
     }
     public func copy() -> ButtonStyleValue {
@@ -173,7 +173,7 @@ public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, 
     }
     public var protoString: String { "\(value.title)" }
     public var valueString: String { protoString }
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
         self
     }
     public func copy() -> TextAlignmentValue {

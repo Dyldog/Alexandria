@@ -35,11 +35,11 @@ public final class MakeableMap: MakeableView {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) async throws {
+    public func insertValues(into variables: Variables, with scope: Scope) throws {
         
     }
     
@@ -93,25 +93,26 @@ public struct MakeableMapView: View {
                     region = locations.map { $0.coordinate }.regionThatFits
                 }
             }
-        }.task(id: variables.hashValue) {
-            do {
-                let value = try await (try await map.locations.value(with: variables, and: scope) as? ArrayValue)?.elements.asyncMap {
-                    guard let location = $0 as? LocationValue else { throw VariableValueError.wrongTypeForOperation }
-                    return Location(
-                        name: (try await location.name.value(with: variables, and: scope) as StringValue).value,
-                        coordinate: .init(
-                            latitude: Double((try await location.latitude.value(with: variables, and: scope) as FloatValue).value),
-                            longitude: Double((try await location.longitude.value(with: variables, and: scope) as FloatValue).value)
-                        )
-                    )
-                }
-                self.locations = value ?? []
-            } catch let error as VariableValueError {
-                self.error = error
-            } catch {
-                fatalError(error.localizedDescription)
-            }
         }
+//        .task(id: variables.hashValue) {
+//            do {
+//                let value = try (try map.locations.value(with: variables, and: scope) as? ArrayValue)?.elements.map {
+//                    guard let location = $0 as? LocationValue else { throw VariableValueError.wrongTypeForOperation }
+//                    return Location(
+//                        name: (try location.name.value(with: variables, and: scope) as StringValue).value,
+//                        coordinate: .init(
+//                            latitude: Double((try location.latitude.value(with: variables, and: scope) as FloatValue).value),
+//                            longitude: Double((try location.longitude.value(with: variables, and: scope) as FloatValue).value)
+//                        )
+//                    )
+//                }
+//                self.locations = value ?? []
+//            } catch let error as VariableValueError {
+//                self.error = error
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        }
     }
 }
 

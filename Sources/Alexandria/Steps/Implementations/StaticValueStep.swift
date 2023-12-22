@@ -27,8 +27,8 @@ public final class StaticValueStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
-        return try await value.value(with: variables, and: scope)
+    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        return try value.value(with: variables, and: scope)
     }
 }
 

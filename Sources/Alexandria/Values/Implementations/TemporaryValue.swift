@@ -35,12 +35,12 @@ public final class TemporaryValue: CompositeEditableVariableValue {
     
     public var valueString: String { output.valueString }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
-        let variableName = try await output.value.value(with: variables, and: scope)
-        if let setValue = await variables.value(for: variableName.valueString) {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        let variableName = try output.value.value(with: variables, and: scope)
+        if let setValue =  variables.value(for: variableName.valueString) {
             return setValue
         } else {
-            return try await initial.value(with: variables, and: scope)
+            return try initial.value(with: variables, and: scope)
         }
     }
     

@@ -36,8 +36,8 @@ public final class OptionalValue: EditableVariableValue {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
-        if let value = try? await value.value(with: variables, and: scope) {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        if let value = try?  value.value(with: variables, and: scope) {
             return value
         } else {
             return NilValue()

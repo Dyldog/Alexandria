@@ -27,8 +27,8 @@ public final class  DictionaryKeysStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) async throws -> VariableValue {
-        let dictionary: DictionaryValue = try await dictionary.value(with: variables, and: scope)
+    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        let dictionary: DictionaryValue = try dictionary.value(with: variables, and: scope)
         return ArrayValue(type: .string, elements: dictionary.elements.keys.map { StringValue(value: $0) })
     }
 }

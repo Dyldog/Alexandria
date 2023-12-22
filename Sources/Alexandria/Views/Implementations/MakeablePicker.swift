@@ -39,16 +39,16 @@ public final class MakeableToggle: MakeableView {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) async throws {
-        let outputVarName = try await isOn.output.value.value(with: variables, and: scope)
-        let outputValue = try await isOn.value(with: variables, and: scope)
-        await variables.set(outputValue, for: outputVarName.valueString)
+    public func insertValues(into variables: Variables, with scope: Scope) throws {
+        let outputVarName = try isOn.output.value.value(with: variables, and: scope)
+        let outputValue = try isOn.value(with: variables, and: scope)
+         variables.set(outputValue, for: outputVarName.valueString)
         
-        try await onToggleUpdate.run(with: variables, and: scope)
+        try onToggleUpdate.run(with: variables, and: scope)
     }
     
     public func add(_ other: VariableValue) throws -> VariableValue {
@@ -75,37 +75,36 @@ struct MakeableToggleView: View {
             }, set: {
                 onUpdate($0)
             })).fixedSize().any
-        }.task(id: variables.hashValue) {
-            do {
-                guard let value = try await toggle.isOn.value(with: variables, and: scope) as? BoolValue
-                else { throw VariableValueError.valueNotFoundForVariable(toggle.isOn.protoString) }
-                self.isOn = value.value
-            } catch let error as VariableValueError {
-                self.error = error
-            } catch {
-                fatalError(error.localizedDescription)
-            }
         }
+//        .task(id: variables.hashValue) {
+//            do {
+//                guard let value = try toggle.isOn.value(with: variables, and: scope) as? BoolValue
+//                else { throw VariableValueError.valueNotFoundForVariable(toggle.isOn.protoString) }
+//                self.isOn = value.value
+//            } catch let error as VariableValueError {
+//                self.error = error
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        }
     }
     
     func onUpdate(_ value: Bool) {
         self.isOn = value
         
-        Task { @MainActor in
-            do {
-                if isRunning {
-                  let outputVar = try await toggle.isOn.output.value.value(with: variables, and: scope)
-                    variables.set(AnyValue(value: BoolValue(value: value)), for: outputVar.valueString)
-                    try await toggle.onToggleUpdate.run(with: variables, and: scope)
-                }
-            } catch let error as VariableValueError {
-                self.error = error
-            } catch {
-                fatalError(error.localizedDescription)
+        do {
+            if isRunning {
+              let outputVar = try toggle.isOn.output.value.value(with: variables, and: scope)
+                variables.set(AnyValue(value: BoolValue(value: value)), for: outputVar.valueString)
+                try toggle.onToggleUpdate.run(with: variables, and: scope)
             }
-            
-            onRuntimeUpdate { }
+        } catch let error as VariableValueError {
+            self.error = error
+        } catch {
+            fatalError(error.localizedDescription)
         }
+        
+        onRuntimeUpdate { }
     }
 }
 

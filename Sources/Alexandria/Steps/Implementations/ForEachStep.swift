@@ -30,11 +30,11 @@ public final class ForEachStep: Step {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) async throws {
+    public func run(with variables: Variables, and scope: Scope) throws {
         for value in loop.value {
-            let value = try await value.value(with: variables, and: scope)
-            await variables.set(value, for: "$INPUT")
-            try await loop.run(with: variables, and: scope)
+            let value = try value.value(with: variables, and: scope)
+             variables.set(value, for: "$INPUT")
+            try loop.run(with: variables, and: scope)
         }
     }
 }

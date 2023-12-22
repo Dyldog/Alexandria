@@ -49,7 +49,7 @@ struct MakeableButtonView: View {
         Task { @MainActor in
             if isRunning {
                 do {
-                    try await button.action.run(with: variables, and: scope)
+                    try button.action.run(with: variables, and: scope)
                     onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
@@ -84,8 +84,8 @@ public final class MakeableButton: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
-        try await MakeableButton(
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        try MakeableButton(
             id: id,
             title: title.value(with: variables, and: scope),
             style: style.value(with: variables, and: scope),

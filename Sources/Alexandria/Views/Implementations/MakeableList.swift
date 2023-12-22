@@ -34,7 +34,7 @@ public final class MakeableList: MakeableView {
     
     public func add(_ other: VariableValue) throws -> VariableValue { fatalError() }
 
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue { self }
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue { self }
 
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
@@ -54,20 +54,20 @@ public final class MakeableList: MakeableView {
         }
     }
     
-    public func valueViews(with variables: Variables, and scope: Scope) async throws -> [any MakeableView] {
+    public func valueViews(with variables: Variables, and scope: Scope) throws -> [any MakeableView] {
         var views: [any MakeableView] = []
         
-        let elements = try await data.value.value(with: variables, and: scope).elements
+        let elements = try data.value.value(with: variables, and: scope).elements
         for data in elements  {
-            let variables = await variables.copy()
+            let variables =  variables.copy()
             
-            let value = try await data.value(
+            let value = try data.value(
                 with: variables, and: scope
             )
             
-            await variables.set(value, for: "$0")
+             variables.set(value, for: "$0")
             
-            let valueView: any MakeableView = try await view.value(with: variables, and: scope)
+            let valueView: any MakeableView = try view.value(with: variables, and: scope)
             
             views.append(valueView)
         }
@@ -88,7 +88,7 @@ public struct MakeableListView: View {
     @EnvironmentObject var variables: Variables
     @Binding var error: VariableValueError?
     
-    @State var views: [any MakeableView] = []
+//    @State var views: [any MakeableView] = []
     
     public init(isRunning: Bool, showEditControls: Bool, scope: Scope, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.isRunning = isRunning
@@ -101,16 +101,37 @@ public struct MakeableListView: View {
         self.scope = scope
     }
     
+    private var contentViews: [any MakeableView] {
+        let variables = variables.copy()
+        var views: [any MakeableView]
+        
+        if isRunning {
+            views = `do` {
+                try listView.valueViews(with: variables, and: scope)
+            } onError: {
+                self.handleError($0)
+                return [MakeableLabel.withText("ERR")]
+            }
+        } else {
+            views = listView.protoViews()
+        }
+        
+        if views.isEmpty {
+            views = [MakeableLabel.withText("LIST")]
+        }
+        
+        return views
+    }
     public var body: some View {
         VStack {
-            ForEach(views.enumeratedArray(), id: \.offset) { index, view in
+            ForEach(contentViews.enumeratedArray(), id: \.offset) { index, view in
                 MakeableWrapperView(
                     isRunning: isRunning,
                     showEditControls: showEditControls, 
                     scope: scope,
                     view: view,
-                    onContentUpdate: {
-                        views[index] = $0
+                    onContentUpdate: { _ in
+//                        views[index] = $0
                     },
                     onRuntimeUpdate: { completion in
                         onRuntimeUpdate {
@@ -120,26 +141,17 @@ public struct MakeableListView: View {
                     error: $error
                 )
             }
-        }.task(id: variables.hashValue) {
-            do {
-                if isRunning {
-                    views = try await listView.valueViews(with: variables, and: scope)
-                } else {
-                    views = listView.protoViews()
-                }
-                
-                if views.isEmpty {
-                    views = [MakeableLabel.withText("LIST")]
-                }
-            } catch let error as VariableValueError {
-                self.error = error
-                views = [MakeableLabel.withText("ERR")]
-            } catch {
-                fatalError(error.localizedDescription)
-            }
         }
         .listStyle(.plain)
             .any
+    }
+    
+    private func handleError(_ error: Error) {
+        if let error = error as? VariableValueError {
+            self.error = error
+        } else {
+            print(error.localizedDescription)
+        }
     }
 }
 
@@ -152,5 +164,13 @@ extension MakeableList: CodeRepresentable {
             }
         }
         """
+    }
+}
+
+func `do`<T>(_ block: () throws -> T, onError: (Error) -> T) -> T {
+    do {
+        return try block()
+    } catch {
+        return onError(error)
     }
 }

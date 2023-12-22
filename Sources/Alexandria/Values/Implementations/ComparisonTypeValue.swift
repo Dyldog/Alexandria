@@ -48,7 +48,7 @@ public final class ComparisonTypeValue: PrimitiveEditableVariableValue {
         throw VariableValueError.variableCannotPerformOperation(.comparisonType, "add")
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
         self
     }
     

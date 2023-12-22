@@ -29,12 +29,12 @@ public final class IfStep: Step {
     \(ifAction.valueString)\(!elseAction.value.isEmpty ? "\nelse:\n\t\(elseAction.valueString)" : "")
     """ }
     
-    public func run(with variables: Variables, and scope: Scope) async throws {
-        let ifValue: StepArray = try await ifAction.value(with: variables, and: scope)
+    public func run(with variables: Variables, and scope: Scope) throws {
+        let ifValue: StepArray = try ifAction.value(with: variables, and: scope)
         if !ifValue.value.isEmpty {
-            try await ifValue.run(with: variables, and: scope)
+            try ifValue.run(with: variables, and: scope)
         } else {
-            try await elseAction.run(with: variables, and: scope)
+            try elseAction.run(with: variables, and: scope)
         }
     }
 

@@ -21,8 +21,15 @@ struct MakeableFieldView: View {
     @State var text: String = "LOADING"
     
     private var fieldView: some View {
+        let variables = variables.copy()
+        
         let binding: Binding<String> = .init(get: {
-            text
+            do {
+                return try field.text.value(with: variables, and: scope).valueString
+            } catch {
+                handleError(error)
+                return "ERROR"
+            }
         }, set: {
             onTextUpdate($0)
         })
@@ -45,19 +52,6 @@ struct MakeableFieldView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .any
             }
-        }.task(id: variables.hashValue) {
-            await updateValues()
-        }
-    }
-    
-    private func updateValues() async  {
-        do {
-            let value = try await field.text.value(with: variables, and: scope).valueString
-            self.text = value
-        } catch let error as VariableValueError {
-            self.error = error
-        } catch {
-            fatalError(error.localizedDescription)
         }
     }
     
@@ -65,22 +59,24 @@ struct MakeableFieldView: View {
         guard self.text != string else { return }
         self.text = string
         
-        Task { @MainActor in
-            do {
-                if isRunning {
-                    let outputVar = try await field.text.output.value.value(with: variables, and: scope)
-                    variables.set(AnyValue(value: StringValue(value: string)), for: outputVar.valueString)
-                    try await field.onTextUpdate.run(with: variables, and: scope)
-                }
-            } catch let error as VariableValueError {
-                self.error = error
-            } catch {
-                print(error.localizedDescription)
+        do {
+            if isRunning {
+                let outputVar = try field.text.output.value.value(with: variables, and: scope)
+                variables.set(AnyValue(value: StringValue(value: string)), for: outputVar.valueString)
+                try field.onTextUpdate.run(with: variables, and: scope)
             }
-            
-            onRuntimeUpdate {
-                Task { @MainActor in await updateValues() }
-            }
+        } catch {
+            handleError(error)
+        }
+        
+        onRuntimeUpdate { }
+    }
+    
+    private func handleError(_ error: Error) {
+        if let error = error as? VariableValueError {
+            self.error = error
+        } else {
+            print(error.localizedDescription)
         }
     }
 }
@@ -125,9 +121,9 @@ public final class MakeableField: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables, and scope: Scope) async throws -> VariableValue {
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
 //        self
-        try await MakeableField(
+        try MakeableField(
             id: id,
             text: TemporaryValue(
                 initial: (text.value(with: variables, and: scope) as (any EditableVariableValue)).any,
@@ -141,11 +137,11 @@ public final class MakeableField: MakeableView, Codable {
         )
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) async throws {
-        let outputVarName = try await text.output.value.value(with: variables, and: scope)
-        let outputValue = try await text.value(with: variables, and: scope)
-        await variables.set(outputValue, for: outputVarName.valueString)
-        try await onTextUpdate.run(with: variables, and: scope)
+    public func insertValues(into variables: Variables, with scope: Scope) throws {
+        let outputVarName = try text.output.value.value(with: variables, and: scope)
+        let outputValue = try text.value(with: variables, and: scope)
+         variables.set(outputValue, for: outputVarName.valueString)
+        try onTextUpdate.run(with: variables, and: scope)
     }
 }
 
