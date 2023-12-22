@@ -217,7 +217,7 @@ extension APIValueStep: Copying {
 }
 
 extension APIValueStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case url
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -282,7 +282,7 @@ extension AddToVarStep: Copying {
 }
 
 extension AddToVarStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case varName
         case value
         public var defaultValue: any EditableVariableValue {
@@ -356,7 +356,7 @@ extension ArrayValueStep: Copying {
 }
 
 extension ArrayValueStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case array
         case index
         public var defaultValue: any EditableVariableValue {
@@ -463,7 +463,7 @@ extension ComparisonValue: Copying {
 }
 
 extension ComparisonValue {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case lhs
         case rhs
         case comparison
@@ -546,7 +546,7 @@ extension ConditionalActionValue: Copying {
 }
 
 extension ConditionalActionValue {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case ifCondition
         case ifSteps
         public var defaultValue: any EditableVariableValue {
@@ -619,7 +619,7 @@ extension DecodeArrayStep: Copying {
 }
 
 extension DecodeArrayStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -683,7 +683,7 @@ extension DecodeDictionaryStep: Copying {
 }
 
 extension DecodeDictionaryStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -747,7 +747,7 @@ extension DictionaryKeysStep: Copying {
 }
 
 extension DictionaryKeysStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case dictionary
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -813,7 +813,7 @@ extension DictionaryValueForKeyStep: Copying {
 }
 
 extension DictionaryValueForKeyStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case dictionary
         case key
         case errorIfNotFound
@@ -896,7 +896,7 @@ extension ForEachStep: Copying {
 }
 
 extension ForEachStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case values
         case loop
         public var defaultValue: any EditableVariableValue {
@@ -969,7 +969,7 @@ extension FunctionStep: Copying {
 }
 
 extension FunctionStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case functionName
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -1034,7 +1034,7 @@ extension FunctionValue: Copying {
 }
 
 extension FunctionValue {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case arguments
         case body
         public var defaultValue: any EditableVariableValue {
@@ -1108,7 +1108,7 @@ extension GetNumberStep: Copying {
 }
 
 extension GetNumberStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         case numberType
         public var defaultValue: any EditableVariableValue {
@@ -1181,7 +1181,7 @@ extension GetSavedDataStep: Copying {
 }
 
 extension GetSavedDataStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case key
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -1246,7 +1246,7 @@ extension IfStep: Copying {
 }
 
 extension IfStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case ifAction
         case elseAction
         public var defaultValue: any EditableVariableValue {
@@ -1321,7 +1321,7 @@ extension LocationValue: Copying {
 }
 
 extension LocationValue {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case name
         case latitude
         case longitude
@@ -1405,7 +1405,7 @@ extension MakeRangeStep: Copying {
 }
 
 extension MakeRangeStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case start
         case end
         case step
@@ -1468,7 +1468,7 @@ extension MakeableButton: Copying {
 }
 
 extension MakeableButton {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case title
         case style
         case action
@@ -1561,7 +1561,7 @@ extension MakeableField: Copying {
 }
 
 extension MakeableField {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case text
         case fontSize
         case onTextUpdate
@@ -1677,7 +1677,7 @@ extension MakeableList: Copying {
 }
 
 extension MakeableList {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case data
         case view
         public var defaultValue: any EditableVariableValue {
@@ -1763,7 +1763,7 @@ extension MakeableMap: Copying {
 }
 
 extension MakeableMap {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case locations
         case zoomFollowsNewAnnotations
         public var defaultValue: any EditableVariableValue {
@@ -1844,7 +1844,7 @@ extension MakeableToggle: Copying {
 }
 
 extension MakeableToggle {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case isOn
         case onToggleUpdate
         case padding
@@ -1932,7 +1932,7 @@ extension MapStep: Copying {
 }
 
 extension MapStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         case mapper
         public var defaultValue: any EditableVariableValue {
@@ -2037,7 +2037,7 @@ extension PrintVarStep: Copying {
 }
 
 extension PrintVarStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case varName
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -2102,7 +2102,7 @@ extension SaveDataStep: Copying {
 }
 
 extension SaveDataStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case key
         case data
         public var defaultValue: any EditableVariableValue {
@@ -2175,7 +2175,7 @@ extension StaticValueStep: Copying {
 }
 
 extension StaticValueStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -2240,7 +2240,7 @@ extension TemporaryValue: Copying {
 }
 
 extension TemporaryValue {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case initial
         case output
         public var defaultValue: any EditableVariableValue {
@@ -2294,7 +2294,7 @@ extension URLEncodeStep: Copying {
 }
 
 extension URLEncodeStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case value
         public var defaultValue: any EditableVariableValue {
             switch self {
@@ -2359,7 +2359,7 @@ extension VariableStep: Copying {
 }
 
 extension VariableStep {
-     public enum Properties: String, ViewProperty {
+     public enum Properties: String, ViewProperty, CaseIterable {
         case varName
         case type
         public var defaultValue: any EditableVariableValue {
