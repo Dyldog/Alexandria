@@ -34,7 +34,9 @@ public final class MakeableList: MakeableView {
     
     public func add(_ other: VariableValue) throws -> VariableValue { fatalError() }
 
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue { self }
+    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+        MakeableStack(axis: .vertical, try valueViews(with: variables, and: scope))
+    }
 
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
@@ -96,7 +98,6 @@ public struct MakeableListView: View {
         self.listView = listView
         self.onContentUpdate = onContentUpdate
         self.onRuntimeUpdate = onRuntimeUpdate
-        self._variables = .init()
         self._error = error
         self.scope = scope
     }
