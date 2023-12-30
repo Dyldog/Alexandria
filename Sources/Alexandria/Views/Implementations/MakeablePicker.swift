@@ -39,14 +39,14 @@ public final class MakeableToggle: MakeableView {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) throws {
+    public func insertValues(into variables: Binding<Variables>, with scope: Scope) throws {
         let outputVarName = try isOn.output.value.value(with: variables, and: scope)
         let outputValue = try isOn.value(with: variables, and: scope)
-         variables.set(outputValue, for: outputVarName.valueString)
+        variables.wrappedValue.set(outputValue, for: outputVarName.valueString)
         
         try onToggleUpdate.run(with: variables, and: scope)
     }
@@ -57,13 +57,12 @@ public final class MakeableToggle: MakeableView {
 }
 
 struct MakeableToggleView: View {
-    let isRunning: Bool
     let showEditControls: Bool
     let scope: Scope
     let toggle: MakeableToggle
     let onContentUpdate: (MakeableToggle) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
-    @EnvironmentObject var variables: Variables
+    @EnvironmentObject var variables: OptionalBox<Variables>
     @Binding var error: VariableValueError?
     
     @State var isOn: Bool = false
@@ -93,10 +92,10 @@ struct MakeableToggleView: View {
         self.isOn = value
         
         do {
-            if isRunning {
-              let outputVar = try toggle.isOn.output.value.value(with: variables, and: scope)
-                variables.set(AnyValue(value: BoolValue(value: value)), for: outputVar.valueString)
-                try toggle.onToggleUpdate.run(with: variables, and: scope)
+            if variables.hasValue {
+                let outputVar = try toggle.isOn.output.value.value(with: $variables.unwrapped, and: scope)
+                variables.value?.set(AnyValue(value: BoolValue(value: value)), for: outputVar.valueString)
+                try toggle.onToggleUpdate.run(with: $variables.unwrapped, and: scope)
             }
         } catch let error as VariableValueError {
             self.error = error

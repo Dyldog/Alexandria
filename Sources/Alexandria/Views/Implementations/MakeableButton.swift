@@ -10,17 +10,15 @@ import Armstrong
 import DylKit
 
 struct MakeableButtonView: View {
-    let isRunning: Bool
     let showEditControls: Bool
     let scope: Scope
     let button: MakeableButton
     let onContentUpdate: (MakeableButton) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
-    @EnvironmentObject var variables: Variables
+    @EnvironmentObject var variables: OptionalBox<Variables>
     @Binding var error: VariableValueError?
     
-    init(isRunning: Bool, showEditControls: Bool, scope: Scope, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
-        self.isRunning = isRunning
+    init(showEditControls: Bool, scope: Scope, button: MakeableButton, onContentUpdate: @escaping (MakeableButton) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.showEditControls = showEditControls
         self.button = button
         self.onContentUpdate = onContentUpdate
@@ -32,7 +30,7 @@ struct MakeableButtonView: View {
         return SwiftUI.Button(action: {
             runAction()
         }, label: {
-            MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, label: button.title, onContentUpdate: {
+            MakeableLabelView(showEditControls: showEditControls, scope: scope, label: button.title, onContentUpdate: {
                 button.title = $0
                 onContentUpdate(button)
             }, onRuntimeUpdate: { completion in
@@ -47,9 +45,9 @@ struct MakeableButtonView: View {
     
     func runAction() {
         Task { @MainActor in
-            if isRunning {
+            if variables.hasValue {
                 do {
-                    try button.action.run(with: variables, and: scope)
+                    try button.action.run(with: $variables.unwrapped, and: scope)
                     onRuntimeUpdate { }
                 } catch let error as VariableValueError {
                     self.error = error
@@ -84,7 +82,7 @@ public final class MakeableButton: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         try MakeableButton(
             id: id,
             title: title.value(with: variables, and: scope),
@@ -101,7 +99,7 @@ public final class MakeableButton: MakeableView, Codable {
         }
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) throws {
+    public func insertValues(into variables: Binding<Variables>, with scope: Scope) throws {
         //
     }
 }

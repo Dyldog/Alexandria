@@ -36,7 +36,7 @@ public final class OptionalValue: EditableVariableValue {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         if let value = try?  value.value(with: variables, and: scope) {
             return value
         } else {

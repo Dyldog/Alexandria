@@ -30,11 +30,13 @@ public final class MakeableList: MakeableView {
         self.view = view
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) throws { }
+    public func insertValues(into variables: Binding<Variables>, with scope: Scope) throws { }
     
     public func add(_ other: VariableValue) throws -> VariableValue { fatalError() }
 
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue { self }
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
+        self
+    }
 
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
@@ -54,18 +56,18 @@ public final class MakeableList: MakeableView {
         }
     }
     
-    public func valueViews(with variables: Variables, and scope: Scope) throws -> [any MakeableView] {
+    public func valueViews(with variables: Binding<Variables>, and scope: Scope) throws -> [any MakeableView] {
         var views: [any MakeableView] = []
         
         let elements = try data.value.value(with: variables, and: scope).elements
         for data in elements  {
-            let variables =  variables.copy()
+//            let variables =  variables.copy()
             
             let value = try data.value(
                 with: variables, and: scope
             )
             
-             variables.set(value, for: "$0")
+            variables.wrappedValue.set(value, for: "$0")
             
             let valueView: any MakeableView = try view.value(with: variables, and: scope)
             
@@ -77,7 +79,6 @@ public final class MakeableList: MakeableView {
 }
 
 public struct MakeableListView: View {
-    let isRunning: Bool
     let showEditControls: Bool
     let scope: Scope
     let listView: MakeableList
@@ -85,29 +86,26 @@ public struct MakeableListView: View {
     let onContentUpdate: (MakeableList) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
     
-    @EnvironmentObject var variables: Variables
+    @EnvironmentObject var variables: OptionalBox<Variables>
     @Binding var error: VariableValueError?
     
 //    @State var views: [any MakeableView] = []
     
-    public init(isRunning: Bool, showEditControls: Bool, scope: Scope, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
-        self.isRunning = isRunning
+    public init(showEditControls: Bool, scope: Scope, listView: MakeableList, onContentUpdate: @escaping (MakeableList) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) {
         self.showEditControls = showEditControls
         self.listView = listView
         self.onContentUpdate = onContentUpdate
         self.onRuntimeUpdate = onRuntimeUpdate
-        self._variables = .init()
         self._error = error
         self.scope = scope
     }
     
     private var contentViews: [any MakeableView] {
-        let variables = variables.copy()
         var views: [any MakeableView]
         
-        if isRunning {
+        if variables.hasValue {
             views = `do` {
-                try listView.valueViews(with: variables, and: scope)
+                try listView.valueViews(with: $variables.unwrapped, and: scope)
             } onError: {
                 self.handleError($0)
                 return [MakeableLabel.withText("ERR")]
@@ -126,7 +124,6 @@ public struct MakeableListView: View {
         VStack {
             ForEach(contentViews.enumeratedArray(), id: \.offset) { index, view in
                 MakeableWrapperView(
-                    isRunning: isRunning,
                     showEditControls: showEditControls, 
                     scope: scope,
                     view: view,

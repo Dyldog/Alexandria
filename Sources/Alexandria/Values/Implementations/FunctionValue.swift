@@ -40,18 +40,18 @@ public final class FunctionValue: CompositeEditableVariableValue, ObservableObje
     
     public var valueString: String { "(\(arguments.valueString)) -> \(body.valueString)" }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         try FunctionValue(
             arguments: .value(arguments.value(with: variables, and: scope)),
             body: .value(body.value(with: variables, and: scope))
         )
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let funcVariables = variables
         let args: DictionaryValue = try arguments.value(with: funcVariables, and: scope)
         for arg in args.elements {
-             funcVariables.set(
+            funcVariables.wrappedValue.set(
                 try arg.value.value(with: funcVariables, and: scope),
                 for: arg.key
             )
@@ -59,7 +59,7 @@ public final class FunctionValue: CompositeEditableVariableValue, ObservableObje
         let body: StepArray = try body.value(with: funcVariables, and: scope)
         try  body.run(with: funcVariables, and: scope)
         
-         variables.set( funcVariables.value(for: "$0") ?? NilValue(), for: "$0")
+        variables.wrappedValue.set(funcVariables.wrappedValue.value(for: "$0") ?? NilValue(), for: "$0")
     }
 }
 

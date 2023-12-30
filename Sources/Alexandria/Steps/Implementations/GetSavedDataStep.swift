@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class GetSavedDataStep: ValueStep {
     
@@ -27,7 +28,7 @@ public final class GetSavedDataStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         guard let data =  UserDefaults.appApp.data(
             forKey: try key.value(with: variables, and: scope).valueString
         ) else { return NilValue.makeDefault() }

@@ -30,14 +30,14 @@ public final class AddToVarStep: Step, ObservableObject {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let varNameValue = try varName.value(with: variables, and: scope)
         
-        guard let oldValue = variables.value(for: varNameValue.valueString) else {
+        guard let oldValue = variables.wrappedValue.value(for: varNameValue.valueString) else {
             throw VariableValueError.valueNotFoundForVariable(varNameValue.valueString)
         }
         let extraValue = try value.value(with: variables, and: scope)
-         variables.set(try oldValue.add(extraValue), for: varName.valueString)
+        variables.wrappedValue.set(try oldValue.add(extraValue), for: varName.valueString)
     }
     
     public enum Error: StepError, Swift.Error {

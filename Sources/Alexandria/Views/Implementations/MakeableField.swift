@@ -10,22 +10,19 @@ import Armstrong
 import DylKit
 
 struct MakeableFieldView: View {
-    let isRunning: Bool
     let showEditControls: Bool
     let scope: Scope
     let field: MakeableField
     let onContentUpdate: (MakeableField) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
-    @EnvironmentObject var variables: Variables
+    @EnvironmentObject var variables: OptionalBox<Variables>
     @Binding var error: VariableValueError?
     @State var text: String = "LOADING"
     
     private var fieldView: some View {
-        let variables = variables.copy()
-        
         let binding: Binding<String> = .init(get: {
             do {
-                return try field.text.value(with: variables, and: scope).valueString
+                return try field.text.value(with: $variables.unwrapped, and: scope).valueString
             } catch {
                 handleError(error)
                 return "ERROR"
@@ -35,16 +32,17 @@ struct MakeableFieldView: View {
         })
         
         if isWidget {
-            return Text(binding.wrappedValue).any
+            return Text(binding.wrappedValue).id(self.field.id).any
         } else if field.isMultiline.value {
-            return TextEditor(text: binding).any
+            return TextEditor(text: binding).id(self.field.id).any
         } else {
-            return TextField("", text: binding).any
+            return TextField("", text: binding).id(self.field.id).any
         }
     }
     var body: some View {
-        VStack {
-            if isRunning {
+        Self._printChanges()
+        return VStack {
+            if variables.hasValue {
                 fieldView
                 .multilineTextAlignment(field.alignment.value)
                 .font(.system(size: CGFloat(field.fontSize.value))).any
@@ -55,6 +53,7 @@ struct MakeableFieldView: View {
                     .any
             }
         }
+        .id(self.field.id)
     }
     
     func onTextUpdate(_ string: String) {
@@ -62,10 +61,10 @@ struct MakeableFieldView: View {
         self.text = string
         
         do {
-            if isRunning {
-                let outputVar = try field.text.output.value.value(with: variables, and: scope)
-                variables.set(AnyValue(value: StringValue(value: string)), for: outputVar.valueString)
-                try field.onTextUpdate.run(with: variables, and: scope)
+            if variables.hasValue {
+                let outputVar = try field.text.output.value.value(with: $variables.unwrapped, and: scope)
+                variables.value?.set(AnyValue(value: StringValue(value: string)), for: outputVar.valueString)
+                try field.onTextUpdate.run(with: $variables.unwrapped, and: scope)
             }
         } catch {
             handleError(error)
@@ -123,7 +122,7 @@ public final class MakeableField: MakeableView, Codable {
         fatalError()
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
 //        self
         try MakeableField(
             id: id,
@@ -139,10 +138,10 @@ public final class MakeableField: MakeableView, Codable {
         )
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) throws {
+    public func insertValues(into variables: Binding<Variables>, with scope: Scope) throws {
         let outputVarName = try text.output.value.value(with: variables, and: scope)
         let outputValue = try text.value(with: variables, and: scope)
-         variables.set(outputValue, for: outputVarName.valueString)
+        variables.wrappedValue.set(outputValue, for: outputVarName.valueString)
         try onTextUpdate.run(with: variables, and: scope)
     }
 }

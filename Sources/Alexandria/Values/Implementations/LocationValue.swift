@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class LocationValue: CompositeEditableVariableValue {
     
@@ -25,7 +26,7 @@ public final class LocationValue: CompositeEditableVariableValue {
         self.longitude = longitude
     }
 
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         LocationValue(
             name: .value(try name.value(with: variables, and: scope)),
             latitude: .value(try latitude.value(with: variables, and: scope)),

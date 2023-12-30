@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class ComparisonValue: CompositeEditableVariableValue {
     
@@ -37,7 +38,7 @@ public final class ComparisonValue: CompositeEditableVariableValue {
         throw VariableValueError.variableCannotPerformOperation(.comparison, "add")
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         comparison.compare(
             lhs: try lhs.value(with: variables, and: scope),
             rhs: try rhs.value(with: variables, and: scope)

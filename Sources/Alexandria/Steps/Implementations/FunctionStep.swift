@@ -27,10 +27,10 @@ public final class FunctionStep: Step {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let nameValue = try functionName.value(with: variables, and: scope)
         
-        guard let value =  variables.value(for: nameValue.valueString) as? StepArray
+        guard let value =  variables.wrappedValue.value(for: nameValue.valueString) as? StepArray
         else { throw VariableValueError.valueNotFoundForVariable(functionName.protoString) }
         
         try value.run(with: variables, and: scope)

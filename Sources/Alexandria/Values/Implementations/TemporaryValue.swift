@@ -35,9 +35,9 @@ public final class TemporaryValue: CompositeEditableVariableValue {
     
     public var valueString: String { output.valueString }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let variableName = try output.value.value(with: variables, and: scope)
-        if let setValue =  variables.value(for: variableName.valueString) {
+        if let setValue =  variables.wrappedValue.value(for: variableName.valueString) {
             return setValue
         } else {
             return try initial.value(with: variables, and: scope)

@@ -21,7 +21,7 @@ public final class PrintVarStep: Step, Codable {
         self.varName = varName
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let value = try varName.value(with: variables, and: scope)
         print("\(varName.valueString): \(value.valueString)")
     }

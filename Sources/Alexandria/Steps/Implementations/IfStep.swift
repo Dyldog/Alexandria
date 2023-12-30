@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class IfStep: Step {
     
@@ -29,7 +30,7 @@ public final class IfStep: Step {
     \(ifAction.valueString)\(!elseAction.value.isEmpty ? "\nelse:\n\t\(elseAction.valueString)" : "")
     """ }
     
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let ifValue: StepArray = try ifAction.value(with: variables, and: scope)
         if !ifValue.value.isEmpty {
             try ifValue.run(with: variables, and: scope)

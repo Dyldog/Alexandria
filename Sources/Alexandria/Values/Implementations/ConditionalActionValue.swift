@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class ConditionalActionValue: CompositeEditableVariableValue, ObservableObject {
     
@@ -36,7 +37,7 @@ public final class ConditionalActionValue: CompositeEditableVariableValue, Obser
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let conditionValue: BoolValue = try ifCondition.value(with: variables, and: scope)
 
         if conditionValue.value {

@@ -30,10 +30,10 @@ public final class ForEachStep: Step {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         for value in loop.value {
             let value = try value.value(with: variables, and: scope)
-             variables.set(value, for: "$INPUT")
+            variables.wrappedValue.set(value, for: "$INPUT")
             try loop.run(with: variables, and: scope)
         }
     }

@@ -31,7 +31,7 @@ public final class ArrayValueStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         guard
             let index = try index.value(with: variables, and: scope) as? IntValue,
             let array = try array.value(with: variables, and: scope) as? ArrayValue

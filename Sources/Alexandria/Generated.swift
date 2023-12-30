@@ -87,28 +87,28 @@ import DylKit
 
 
 extension MakeableButton {
-    public func make(isRunning: Bool, showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableButtonView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, button: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
+    public func make(showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
+        MakeableButtonView(showEditControls: showEditControls, scope: scope, button: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableField {
-    public func make(isRunning: Bool, showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableFieldView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, field: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
+    public func make(showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
+        MakeableFieldView(showEditControls: showEditControls, scope: scope, field: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableList {
-    public func make(isRunning: Bool, showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableListView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, listView: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
+    public func make(showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
+        MakeableListView(showEditControls: showEditControls, scope: scope, listView: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableMap {
-    public func make(isRunning: Bool, showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableMapView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, map: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
+    public func make(showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
+        MakeableMapView(showEditControls: showEditControls, scope: scope, map: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 extension MakeableToggle {
-    public func make(isRunning: Bool, showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
-        MakeableToggleView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, toggle: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
+    public func make(showEditControls: Bool, scope: Scope, onContentUpdate: @escaping (any MakeableView) -> Void, onRuntimeUpdate: @escaping (@escaping Block) -> Void, error: Binding<VariableValueError?>) -> AnyView {
+        MakeableToggleView(showEditControls: showEditControls, scope: scope, toggle: self, onContentUpdate: onContentUpdate, onRuntimeUpdate: onRuntimeUpdate, error: error).any
     }
 }
 
@@ -131,7 +131,7 @@ public final class ButtonStyleValue: PrimitiveEditableVariableValue, Codable, Co
     }
     public var protoString: String { "\(value.title)" }
     public var valueString: String { protoString }
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         self
     }
     public func copy() -> ButtonStyleValue {
@@ -173,7 +173,7 @@ public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, 
     }
     public var protoString: String { "\(value.title)" }
     public var valueString: String { protoString }
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         self
     }
     public func copy() -> TextAlignmentValue {

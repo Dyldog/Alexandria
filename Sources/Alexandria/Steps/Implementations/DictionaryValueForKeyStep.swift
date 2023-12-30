@@ -38,7 +38,7 @@ public final class  DictionaryValueForKeyStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let key = try key.value(with: variables, and: scope)
         
         guard

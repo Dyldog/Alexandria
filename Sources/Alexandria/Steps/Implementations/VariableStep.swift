@@ -30,10 +30,10 @@ public final class VariableStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let nameValue = try varName.value(with: variables, and: scope)
         
-        guard let value =  variables.value(for: nameValue.valueString)
+        guard let value =  variables.wrappedValue.value(for: nameValue.valueString)
         else { throw VariableValueError.valueNotFoundForVariable(varName.protoString) }
         
         return try value.value(with: variables, and: scope)

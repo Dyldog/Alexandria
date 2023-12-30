@@ -27,7 +27,7 @@ public final class DecodeArrayStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let value = try value.value(with: variables, and: scope)
         return ArrayValue.from(try JSONSerialization.jsonObject(
             with: value.valueString.data(using: .utf8)!,

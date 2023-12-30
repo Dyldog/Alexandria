@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 // sourcery: skipCodable
 public final class MakeRangeStep: ValueStep {
@@ -35,7 +36,7 @@ public final class MakeRangeStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let start: any NumericValue = try start.value(with: variables, and: scope)
         let end: any NumericValue = try end.value(with: variables, and: scope)
         let step: any NumericValue = try step.value(with: variables, and: scope)

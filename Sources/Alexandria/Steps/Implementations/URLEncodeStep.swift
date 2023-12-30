@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class URLEncodeStep: ValueStep {
     
@@ -28,7 +29,7 @@ public final class URLEncodeStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let value: StringValue = try value.value(with: variables, and: scope)
         return StringValue(value: value.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
     }

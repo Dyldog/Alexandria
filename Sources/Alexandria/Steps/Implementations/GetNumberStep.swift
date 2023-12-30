@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class GetNumberStep: ValueStep {
     
@@ -30,7 +31,7 @@ public final class GetNumberStep: ValueStep {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         let value = try value.value(with: variables, and: scope)
         return try numberType.value.make(from: value.valueString)
     }

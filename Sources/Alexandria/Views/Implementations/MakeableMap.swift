@@ -35,11 +35,11 @@ public final class MakeableMap: MakeableView {
         }
     }
     
-    public func value(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func value(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         self
     }
     
-    public func insertValues(into variables: Variables, with scope: Scope) throws {
+    public func insertValues(into variables: Binding<Variables>, with scope: Scope) throws {
         
     }
     
@@ -69,13 +69,12 @@ public struct Location: Identifiable, Hashable {
 }
 
 public struct MakeableMapView: View {
-    let isRunning: Bool
     let showEditControls: Bool
     let scope: Scope
     let map: MakeableMap
     let onContentUpdate: (MakeableMap) -> Void
     let onRuntimeUpdate: (@escaping Block) -> Void
-    @EnvironmentObject var variables: Variables
+    @EnvironmentObject var variables: OptionalBox<Variables>
     @Binding var error: VariableValueError?
     
 //    @State var locations: [Location] = []
@@ -83,15 +82,15 @@ public struct MakeableMapView: View {
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10))
     
     public var body: some View {
-        let variables = variables.copy()
+//        let variables = variables.copy()
         let locations: [Location] = `do` {
-            return try (try map.locations.value(with: variables, and: scope) as? ArrayValue)?.elements.map {
+            return try (try map.locations.value(with: $variables.unwrapped, and: scope) as? ArrayValue)?.elements.map {
                 guard let location = $0 as? LocationValue else { throw VariableValueError.wrongTypeForOperation }
                 return Location(
-                    name: (try location.name.value(with: variables, and: scope) as StringValue).value,
+                    name: (try location.name.value(with: $variables.unwrapped, and: scope) as StringValue).value,
                     coordinate: .init(
-                        latitude: Double((try location.latitude.value(with: variables, and: scope) as FloatValue).value),
-                        longitude: Double((try location.longitude.value(with: variables, and: scope) as FloatValue).value)
+                        latitude: Double((try location.latitude.value(with: $variables.unwrapped, and: scope) as FloatValue).value),
+                        longitude: Double((try location.longitude.value(with: $variables.unwrapped, and: scope) as FloatValue).value)
                     )
                 )
             } ?? []

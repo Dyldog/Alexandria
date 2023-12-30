@@ -31,15 +31,15 @@ public final class MapStep: ValueStep {
         }
     }
     
-    public func run(with variables: Variables, and scope: Scope) throws -> VariableValue {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws -> VariableValue {
         var outputs: [any EditableVariableValue] = []
         
         for value in try value.value.value(with: variables, and: scope).elements {
-            let variables =  variables.copy()
+//            let variables =  variables.copy()
             let value = try value.value(with: variables, and: scope)
-             variables.set(value, for: "$INPUT")
+            variables.wrappedValue.set(value, for: "$INPUT")
             try mapper.run(with: variables, and: scope)
-            guard let returnValue =  variables.value(for: "$0") else {
+            guard let returnValue =  variables.wrappedValue.value(for: "$0") else {
                 throw Error.noValueReturnedFromMap
             }
             outputs.append(try returnValue.value(with: variables, and: scope))

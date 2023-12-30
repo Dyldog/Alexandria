@@ -7,6 +7,7 @@
 
 import Foundation
 import Armstrong
+import SwiftUI
 
 public final class SaveDataStep: Step {
     
@@ -30,7 +31,7 @@ public final class SaveDataStep: Step {
         }
     }
 
-    public func run(with variables: Variables, and scope: Scope) throws {
+    public func run(with variables: Binding<Variables>, and scope: Scope) throws {
         let value: EditableVariableValue = try data.value(with: variables, and: scope)
          UserDefaults.appApp.set(
             CodableVariableValue(value: value).encoded(),
