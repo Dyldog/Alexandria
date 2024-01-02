@@ -10,6 +10,7 @@ import Armstrong
 
 public final class ArrayValueStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.containerSteps]
     public static var type: VariableType { .arrayStep }
     public static var title: String { "Get value from array" }
     

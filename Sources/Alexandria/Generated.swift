@@ -116,7 +116,7 @@ extension MakeableToggle {
 
 
 public final class ButtonStyleValue: PrimitiveEditableVariableValue, Codable, Copying {
-
+    public static let categories: [ValueCategory] = [.layout]
     public static var type: VariableType { .buttonStyle }
     public static var defaultValue: ButtonStyle { .defaultValue }
     public var value: ButtonStyle
@@ -158,7 +158,7 @@ extension VariableType {
 }
 
 public final class TextAlignmentValue: PrimitiveEditableVariableValue, Codable, Copying {
-
+    public static let categories: [ValueCategory] = [.text]
     public static var type: VariableType { .textAlignment }
     public static var defaultValue: TextAlignment { .defaultValue }
     public var value: TextAlignment

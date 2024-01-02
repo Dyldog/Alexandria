@@ -11,7 +11,7 @@ import Armstrong
 import DylKit
 
 public final class MakeableMap: MakeableView {
-    
+    public static let categories: [ValueCategory] = [.views]
     public static var type: VariableType { .map }
     
     public let id: UUID

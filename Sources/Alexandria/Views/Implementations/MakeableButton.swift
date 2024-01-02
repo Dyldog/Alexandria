@@ -62,6 +62,7 @@ struct MakeableButtonView: View {
 }
 
 public final class MakeableButton: MakeableView, Codable {
+    public static let categories: [ValueCategory] = [.views]
     public static var type: VariableType { .button }
     
     public let id: UUID

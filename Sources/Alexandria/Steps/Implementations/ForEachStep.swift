@@ -10,6 +10,7 @@ import Armstrong
 
 public final class ForEachStep: Step {
     
+    public static let categories: [ValueCategory] = [.looping]
     public static var type: VariableType { .forEachStep }
     public static var title: String { "Loop over an array of values" }
     public var values: TypedValue<ArrayValue>

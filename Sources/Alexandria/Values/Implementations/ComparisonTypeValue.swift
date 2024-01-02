@@ -29,6 +29,7 @@ public enum ComparisonType: String, Codable, CaseIterable, Titleable, CodeRepres
 
 public final class ComparisonTypeValue: PrimitiveEditableVariableValue {
     
+    public static let categories: [ValueCategory] = [.logicHelpers]
     public static var type: VariableType { .comparisonType }
     
     public var value: ComparisonType

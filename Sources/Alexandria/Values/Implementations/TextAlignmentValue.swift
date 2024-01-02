@@ -8,6 +8,7 @@
 import SwiftUI
 import Armstrong
 
+// sourcery: categories = ".text"
 extension TextAlignment: PickableValue, Codable {
     
     public static var defaultValue: TextAlignment = .center

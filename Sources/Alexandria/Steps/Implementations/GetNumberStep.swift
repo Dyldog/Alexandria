@@ -10,6 +10,7 @@ import Armstrong
 
 public final class GetNumberStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.dataProcessing]
     public static var type: VariableType { .getNumberStep }
     public static var title: String { "Get number from value" }
     public var value: AnyValue

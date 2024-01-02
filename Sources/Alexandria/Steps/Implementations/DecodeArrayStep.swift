@@ -10,6 +10,7 @@ import Armstrong
 
 public final class DecodeArrayStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.dataProcessing]
     public static var type: VariableType { .decodeArrayStep }
     public static var title: String { "Decode an array from JSON" }
     public var value: TypedValue<IntValue>

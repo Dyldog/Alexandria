@@ -9,7 +9,7 @@ import Foundation
 import Armstrong
 
 public final class ComparisonValue: CompositeEditableVariableValue {
-    
+    public static let categories: [ValueCategory] = [.logic]
     public static var type: VariableType { .comparison }
     
     public var protoString: String { "\(lhs.protoString) \(comparison.protoString) \(rhs.protoString)" }

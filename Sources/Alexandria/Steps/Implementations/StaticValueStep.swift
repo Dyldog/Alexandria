@@ -10,6 +10,7 @@ import Armstrong
 
 public final class StaticValueStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.variables]
     public static var type: VariableType { .staticStep }
     public static var title: String { "Static value" }
     public var value: AnyValue

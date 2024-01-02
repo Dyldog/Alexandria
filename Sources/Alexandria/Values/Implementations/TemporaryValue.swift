@@ -10,6 +10,7 @@ import Armstrong
 
 // sourcery: skipCodable
 public final class TemporaryValue: CompositeEditableVariableValue {
+    public static let categories: [ValueCategory] = [.helperValues]
     public static var type: VariableType { .temporary }
     
     public var initial: AnyValue

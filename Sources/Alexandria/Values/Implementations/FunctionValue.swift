@@ -9,6 +9,7 @@ import SwiftUI
 import Armstrong
 
 public final class FunctionValue: CompositeEditableVariableValue, ObservableObject {
+    public static let categories: [ValueCategory] = [.computation]
     public static var type: VariableType { .function }
     
     public var arguments: TypedValue<DictionaryValue> { didSet { objectWillChange.send() } }

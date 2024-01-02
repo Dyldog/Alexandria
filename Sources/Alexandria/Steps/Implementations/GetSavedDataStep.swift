@@ -10,6 +10,7 @@ import Armstrong
 
 public final class GetSavedDataStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.variables]
     public static var type: VariableType { .getSavedDataStep }
     public static var title: String { "Retrieve data saved to device" }
     public var key: TypedValue<StringValue>

@@ -9,7 +9,7 @@ import Foundation
 import Armstrong
 
 public final class ConditionalActionValue: CompositeEditableVariableValue, ObservableObject {
-    
+    public static let categories: [ValueCategory] = [.computation]
     public static var type: VariableType { .conditionalAction }
     
     public var ifCondition: ComparisonValue

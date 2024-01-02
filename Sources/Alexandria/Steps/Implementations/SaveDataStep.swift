@@ -10,6 +10,7 @@ import Armstrong
 
 public final class SaveDataStep: Step {
     
+    public static let categories: [ValueCategory] = [.variables]
     public static var type: VariableType { .saveDataStep }
     public static var title: String { "Save data to device" }
     public var key: TypedValue<StringValue>

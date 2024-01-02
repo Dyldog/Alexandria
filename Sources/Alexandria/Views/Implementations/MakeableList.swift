@@ -14,7 +14,7 @@ public typealias MakeableListRow = MakeableView & Codable
 
 // sourcery: variableTypeName = "listView"
 public final class MakeableList: MakeableView {
-    
+    public static let categories: [ValueCategory] = [.views]
     public static var type: VariableType { .listView }
     
     public let id: UUID

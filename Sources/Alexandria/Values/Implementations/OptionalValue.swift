@@ -10,6 +10,7 @@ import Armstrong
 
 public final class OptionalValue: EditableVariableValue {
     
+    public static let categories: [ValueCategory] = [.helperValues]
     public static var type: VariableType { .optional }
     
     public var protoString: String { "\(value.protoString)?" }

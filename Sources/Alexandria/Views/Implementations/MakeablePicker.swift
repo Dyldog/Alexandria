@@ -10,7 +10,7 @@ import Armstrong
 import DylKit
 
 public final class MakeableToggle: MakeableView {
-    
+    public static let categories: [ValueCategory] = [.views]
     public static var type: VariableType { .toggle }
     
     public let id: UUID

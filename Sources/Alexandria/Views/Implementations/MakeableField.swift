@@ -84,7 +84,7 @@ struct MakeableFieldView: View {
 }
 
 public final class MakeableField: MakeableView, Codable {
-    
+    public static let categories: [ValueCategory] = [.views]
     public static var type: VariableType { .field }
     
     public let id: UUID

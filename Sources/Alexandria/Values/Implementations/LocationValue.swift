@@ -10,6 +10,7 @@ import Armstrong
 
 public final class LocationValue: CompositeEditableVariableValue {
     
+    public static let categories: [ValueCategory] = [.location]
     public static var type: VariableType { .location }
     
     public var name: TypedValue<StringValue>

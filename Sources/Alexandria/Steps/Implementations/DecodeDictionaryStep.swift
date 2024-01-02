@@ -10,6 +10,7 @@ import Armstrong
 
 public final class DecodeDictionaryStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.dataProcessing]
     public static var type: VariableType { .decodeDictionaryStep }
     public static var title: String { "Decode a dictionary from JSON" }
     public var value: AnyValue

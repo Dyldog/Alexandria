@@ -8,6 +8,7 @@
 import SwiftUI
 import Armstrong
 
+// sourcery: categories = ".layout"
 public enum ButtonStyle: String, PickableValue {
     case plain
     case borderedProminent

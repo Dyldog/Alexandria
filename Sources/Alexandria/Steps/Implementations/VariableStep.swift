@@ -10,6 +10,7 @@ import Armstrong
 
 public final class VariableStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.variables]
     public static var type: VariableType { .variableStep }
     public static var title: String { "Get variable" }
     public var varName: AnyValue

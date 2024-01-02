@@ -10,6 +10,7 @@ import Armstrong
 
 public final class URLEncodeStep: ValueStep {
     
+    public static let categories: [ValueCategory] = [.dataProcessing]
     public static var type: VariableType { .uRLEncodeStep }
     public static var title: String { "URL encode a string" }
     

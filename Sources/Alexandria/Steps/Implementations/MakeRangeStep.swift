@@ -10,7 +10,7 @@ import Armstrong
 
 // sourcery: skipCodable
 public final class MakeRangeStep: ValueStep {
-    
+    public static let categories: [ValueCategory] = [.numberSteps]
     public static var type: VariableType { .makeRangeStep }
     public static var title: String { "Create range of numbers" }
     
