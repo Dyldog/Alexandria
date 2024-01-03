@@ -18,19 +18,21 @@ public enum ButtonStyle: String, PickableValue {
     
     public var title: String { rawValue }
     
-    public var style: any PrimitiveButtonStyle {
-        switch self {
-        case .plain: return .plain
-        case .borderedProminent: return .borderedProminent
-        case .bordered: return .bordered
-        }
-    }
-    
     public var codeRepresentation: String {
         switch self {
         case .plain: return ".plain"
         case .borderedProminent: return ".borderedProminent"
         case .bordered: return ".bordered"
+        }
+    }
+}
+
+public extension View {
+    func withButtonStyle(_ style: ButtonStyle) -> some View {
+        switch style {
+        case .plain: return buttonStyle(.plain).any
+        case .borderedProminent: return buttonStyle(.borderedProminent).any
+        case .bordered: return buttonStyle(.bordered).any
         }
     }
 }

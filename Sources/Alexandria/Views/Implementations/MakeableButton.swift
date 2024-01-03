@@ -32,17 +32,22 @@ struct MakeableButtonView: View {
         return SwiftUI.Button(action: {
             runAction()
         }, label: {
-            MakeableLabelView(isRunning: isRunning, showEditControls: showEditControls, scope: scope, label: button.title, onContentUpdate: {
-                button.title = $0
-                onContentUpdate(button)
-            }, onRuntimeUpdate: { completion in
-                onRuntimeUpdate {
-                    completion()
-                }
-            }, error: $error)
+            MakeableWrapperView(
+                isRunning: isRunning,
+                showEditControls: showEditControls,
+                scope: scope,
+                view: button.title.value,
+                onContentUpdate: {
+                    button.title = .init(value: $0)
+                    onContentUpdate(button)
+                }, onRuntimeUpdate:  { completion in
+                    onRuntimeUpdate {
+                        completion()
+                    }
+                }, error: $error
+            )
         })
-        .buttonStyle(.bordered)
-//        .buttonStyle(button.style.value.style)
+        .withButtonStyle(button.style.value)
     }
     
     func runAction() {
@@ -67,14 +72,14 @@ public final class MakeableButton: MakeableView, Codable {
     
     public let id: UUID
     
-    @Published public var title: MakeableLabel
+    @Published public var title: AnyMakeableView
     @Published public var style: ButtonStyleValue
     @Published public var action: FunctionValue
     
     public var protoString: String { "BUTTON(\(title.protoString))" }
     public var valueString: String { title.valueString }
     
-    public init(id: UUID, title: MakeableLabel, style: ButtonStyleValue, action: FunctionValue) {
+    public init(id: UUID, title: AnyMakeableView, style: ButtonStyleValue, action: FunctionValue) {
         self.id = id
         self.title = title
         self.style = style
@@ -96,7 +101,7 @@ public final class MakeableButton: MakeableView, Codable {
     
     public static func defaultValue(for property: Properties) -> any EditableVariableValue {
         switch property {
-        case .title: return MakeableLabel.makeDefault()
+        case .title: return AnyMakeableView(value: MakeableLabel.makeDefault())
         case .action: return FunctionValue.makeDefault()
         case .style: return ButtonStyleValue(value: .bordered)
         }

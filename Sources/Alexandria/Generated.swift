@@ -21,6 +21,7 @@ public class Alexandria: AAProvider {
         MakeRangeStep.self,
         MapStep.self,
         PrintVarStep.self,
+        RandomElementStep.self,
         SaveDataStep.self,
         StaticValueStep.self,
         URLEncodeStep.self,
@@ -55,6 +56,7 @@ public class Alexandria: AAProvider {
     MapStep.self,
     OptionalValue.self,
     PrintVarStep.self,
+    RandomElementStep.self,
     SaveDataStep.self,
     StaticValueStep.self,
     TemporaryValue.self,
@@ -1483,7 +1485,7 @@ extension MakeableButton {
     public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
         .init(
             id: UUID(),
-            title: factory(.title) as! MakeableLabel,
+            title: factory(.title) as! AnyMakeableView,
             style: factory(.style) as! ButtonStyleValue,
             action: factory(.action) as! FunctionValue
         )
@@ -1492,7 +1494,7 @@ extension MakeableButton {
     public static func makeDefault() -> Self {
         .init(
             id: UUID(),
-            title: Properties.title.defaultValue as! MakeableLabel,
+            title: Properties.title.defaultValue as! AnyMakeableView,
             style: Properties.style.defaultValue as! ButtonStyleValue,
             action: Properties.action.defaultValue as! FunctionValue
         )
@@ -1507,7 +1509,7 @@ extension MakeableButton {
 
     public func set(_ value: Any, for property: Properties) {
         switch property {
-            case .title: self.title = value as! MakeableLabel
+            case .title: self.title = value as! AnyMakeableView
             case .style: self.style = value as! ButtonStyleValue
             case .action: self.action = value as! FunctionValue
         }
@@ -1530,7 +1532,7 @@ extension MakeableButton {
         let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
             id: (try? valueContainer.decode(UUID.self, forKey: .id)) ?? UUID(),
-            title: (try? valueContainer.decode(MakeableLabel.self, forKey: .title)) ?? Properties.title.defaultValue as! MakeableLabel,
+            title: (try? valueContainer.decode(AnyMakeableView.self, forKey: .title)) ?? Properties.title.defaultValue as! AnyMakeableView,
             style: (try? valueContainer.decode(ButtonStyleValue.self, forKey: .style)) ?? Properties.style.defaultValue as! ButtonStyleValue,
             action: (try? valueContainer.decode(FunctionValue.self, forKey: .action)) ?? Properties.action.defaultValue as! FunctionValue
         )
@@ -2087,6 +2089,70 @@ extension PrintVarStep {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(varName, forKey: .varName)
+    }
+}
+
+// RandomElementStep
+
+extension RandomElementStep: Copying {
+    public func copy() -> RandomElementStep {
+        return RandomElementStep(
+                    array: array
+        )
+    }
+}
+
+extension RandomElementStep {
+     public enum Properties: String, ViewProperty, CaseIterable {
+        case array
+        public var defaultValue: any EditableVariableValue {
+            switch self {
+            case .array: return RandomElementStep.defaultValue(for: .array)
+            }
+        }
+    }
+    public static func make(factory: (Properties) -> any EditableVariableValue) -> Self {
+        .init(
+            array: factory(.array) as! TypedValue<ArrayValue>
+        )
+    }
+
+    public static func makeDefault() -> Self {
+        .init(
+            array: Properties.array.defaultValue as! TypedValue<ArrayValue>
+        )
+    }
+    public func value(for property: Properties) -> any EditableVariableValue {
+        switch property {
+            case .array: return array
+        }
+    }
+
+    public func set(_ value: Any, for property: Properties) {
+        switch property {
+            case .array: self.array = value as! TypedValue<ArrayValue>
+        }
+    }
+}
+
+extension VariableType {
+    public static var randomElementStep: VariableType { .init(title: "RandomElementStep") } // RandomElementStep
+}
+
+extension RandomElementStep {
+    enum CodingKeys: String, CodingKey {
+        case array
+    }
+
+    public convenience init(from decoder: Decoder) throws {
+        let valueContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            array: (try? valueContainer.decode(TypedValue<ArrayValue>.self, forKey: .array)) ?? Properties.array.defaultValue as! TypedValue<ArrayValue>
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(array, forKey: .array)
     }
 }
 
