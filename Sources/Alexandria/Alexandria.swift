@@ -117,7 +117,7 @@ extension Alexandria {
                         GetNumberStep(value: .variable(named: "AUD_VALUE"), numberType: .init(value: .float))
                     ])).any,
                     operation: .init(value: .mulitply)
-                ).any, size: 48)
+                ).any, size: 48, isMultiline: .true)
             ])
         ])
     )
